@@ -16,6 +16,7 @@
 	<meta name="viewport" content="width=device-width">
 
 	<link rel="profile" href="http://gmpg.org/xfn/11">
+	<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
 	<link rel = "stylesheet" href = "http://getbootstrap.com/dist/css/bootstrap.min.css" type = "text/css" media = "screen" />
 	<link rel="pingback" href="<?php bloginfo( 'pingback_url' ); ?>">
 <?php if ( get_theme_mod('site_favicon') ) : ?>
@@ -60,6 +61,18 @@
 		<!-- .site-branding --></div>
 
 		<?php if ( ! dynamic_sidebar( 'sidebar-2' ) ) : ?>
+		<div class="account-id"> 
+			<div class="dropdown">
+			    <button class="btn dropdown-toggle" id="menu1" type="button" data-toggle="dropdown">Profile
+			    <span class="caret"></span></button>
+			    <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
+			     <li role="presentation"><a role="menuitem" tabindex="-1" href="#">My Profile</a></li>
+			      <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Pesanan Saya</a></li>
+			      <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Logout</a></li>  
+			    </ul>
+			</div>
+			  <br>
+		</div>
 		<?php endif; ?>
 	<!-- #masthead --></header>
 
@@ -71,3 +84,4 @@
 
 	<div id="main" class="site-main">
 		<div class="clearfix container">
+			
