@@ -17,11 +17,11 @@ get_header(); ?>
         <div class="col-lg-4 col-sm-6">
           <div class="thumbnail listresto">
             <a href="/template-overviews/creative" class="post-image-link">
-              <p><a href="http://localhost:81/DullatipFam/menu-list?distributor=<?php echo $distributor->id_dist; ?>"><img width="100%" height="250" src="<?php echo $distributor->gambar; ?>"></a></p>
+              <p><a href="http://localhost:81/DullatipFam/menu-list?distributor=<?php echo $distributor->id_dist; ?>"><img width="100%" height="250" src="<?php echo $distributor->gambar_dist; ?>"></a></p>
               <!-- gambar nanti diambil dari inputan admin yang menu distributor - delivery put -->
             </a>
             <div class="caption namadistributor">
-              <center><h2><?php echo $distributor->nama; ?></h2></center><!-- nama distributor -->
+              <center><h2><?php echo $distributor->nama_dist; ?></h2></center><!-- nama distributor -->
             </div>
           </div>
         </div>

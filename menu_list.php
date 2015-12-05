@@ -3,10 +3,10 @@
 
 $content = get_distributor_by_id();
 if( !is_null($content) ){
-  $gambar = $content['distributor']['gambar'];
-  $nama = $content['distributor']['nama'];
-  $keterangan = $content['distributor']['keterangan'];
-  $alamat = $content['distributor']['alamat'];
+  $gambar = $content['distributor']['gambar_dist'];
+  $nama = $content['distributor']['nama_dist'];
+  $keterangan = $content['distributor']['keterangan_dist'];
+  $alamat = $content['distributor']['alamat_dist'];
 }
 
 get_header(); ?>
