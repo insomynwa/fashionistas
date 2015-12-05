@@ -53,220 +53,41 @@ angular.module('tabApp', [])
             <div class="row" ng-controller="TabController">
               <div class="col-md-2">
                 <ul class="nav nav-pills nav-stacked">
-                  <li ng-class="{ active: isSet(1) }">
-                      <a href ng-click="setTab(1)">Kategori 1</a>
-                  </li>
-                  <li ng-class="{ active: isSet(2) }">
-                      <a href ng-click="setTab(2)">Kategori 2</a>
-                  </li>
-                  <li ng-class="{ active: isSet(3) }">
-                      <a href ng-click="setTab(3)">Kategori 3</a>
-                  </li>
+                  <?php if( !is_null($content['katmenu']) && sizeof($content['katmenu']) > 0 ): ?>
+                  <?php $nmr=1;foreach ( $content['katmenu'] as $kategori): ?>
+                    <li ng-class="{ active: isSet(<?php echo $nmr; ?>) }" class="katlink" id="katmenu-list_<?php echo $kategori->id_katmenu; ?>">
+                      <a href ng-click="setTab(<?php echo $nmr; ?>)"><?php echo $kategori->nama_katmenu; ?></a>
+                    </li>
+                    <?php $nmr++;endforeach; ?>
+                  <?php else: ?>
+                    <li>Belum ada kategori.</li>
+                  <?php endif; ?>
                 </ul>
               </div>
               <div class="col-md-10">
-                    <div ng-show="isSet(1)">
-                      <div class="thumbnail">
-                        <div class="jdl_menu">Kategori 1 (nanti diisi kategori)</div>
-                        <p></p>
-                        <!-- mulai row -->
-                         <div class="row text-center">
-
-                          <div class="col-md-4 col-sm-6 hero-feature">
-                              <div class="thumbnail">
-                                <p></p>
-                                  <h4>Menu 1</h4>
-                                  <a href="#ke-menu-deskripsi-produk"><img class="gbr-menu" src="http://www.edam-burger.com/images/menu/890651burger.jpg" alt=""></a>
-                                  <div class="caption">
-                                        <b>Rp. 200.000</b>
-                                        <p></p>
-                                          <a href="#masuk-ke-chart"><button class="btn-menu"> Pesan Sekarang</button> </a>
-                                          <p></p><a href="ke-menu-deskripsi-produk"><button class="btn-menu-detail"> Detail</button> </a>
-                                      </p>
-                                  </div>
-                              </div>
-                          </div>
-                          <div class="col-md-4 col-sm-6 hero-feature">
-                              <div class="thumbnail">
-                                <p></p>
-                                  <h4>Menu 1</h4>
-                                  <a href="#ke-menu-deskripsi-produk"><img class="gbr-menu" src="http://www.edam-burger.com/images/menu/890651burger.jpg" alt=""></a>
-                                  <div class="caption">
-                                        <b>Rp. 200.000</b>
-                                        <p></p>
-                                          <a href="#masuk-ke-chart"><button class="btn-menu"> Pesan Sekarang</button> </a>
-                                          <p></p><a href="ke-menu-deskripsi-produk"><button class="btn-menu-detail"> Detail</button> </a>
-                                      </p>
-                                  </div>
-                              </div>
-                          </div>
-                          <div class="col-md-4 col-sm-6 hero-feature">
-                              <div class="thumbnail">
-                                <p></p>
-                                  <h4>Menu 1</h4>
-                                  <a href="#ke-menu-deskripsi-produk"><img class="gbr-menu" src="http://www.edam-burger.com/images/menu/890651burger.jpg" alt=""></a>
-                                  <div class="caption">
-                                        <b>Rp. 200.000</b>
-                                        <p></p>
-                                          <a href="#masuk-ke-chart"><button class="btn-menu"> Pesan Sekarang</button> </a>
-                                          <p></p><a href="ke-menu-deskripsi-produk"><button class="btn-menu-detail"> Detail</button> </a>
-                                      </p>
-                                  </div>
-                              </div>
-                          </div>
-                          <div class="col-md-4 col-sm-6 hero-feature">
-                              <div class="thumbnail">
-                                <p></p>
-                                  <h4>Menu 1</h4>
-                                  <a href="#ke-menu-deskripsi-produk"><img class="gbr-menu" src="http://www.edam-burger.com/images/menu/890651burger.jpg" alt=""></a>
-                                  <div class="caption">
-                                        <b>Rp. 200.000</b>
-                                        <p></p>
-                                          <a href="#masuk-ke-chart"><button class="btn-menu"> Pesan Sekarang</button> </a>
-                                          <p></p><a href="ke-menu-deskripsi-produk"><button class="btn-menu-detail"> Detail</button> </a>
-                                      </p>
-                                  </div>
-                              </div>
-                          </div>
-                          <div class="col-md-4 col-sm-6 hero-feature">
-                              <div class="thumbnail">
-                                <p></p>
-                                  <h4>Menu 1</h4>
-                                  <a href="#ke-menu-deskripsi-produk"><img class="gbr-menu" src="http://www.edam-burger.com/images/menu/890651burger.jpg" alt=""></a>
-                                  <div class="caption">
-                                        <b>Rp. 200.000</b>
-                                        <p></p>
-                                          <a href="#masuk-ke-chart"><button class="btn-menu"> Pesan Sekarang</button> </a>
-                                          <p></p><a href="ke-menu-deskripsi-produk"><button class="btn-menu-detail"> Detail</button> </a>
-                                      </p>
-                                  </div>
-                              </div>
-                          </div>
-                          <div class="col-md-4 col-sm-6 hero-feature">
-                              <div class="thumbnail">
-                                <p></p>
-                                  <h4>Menu 1</h4>
-                                  <a href="#ke-menu-deskripsi-produk"><img class="gbr-menu" src="http://www.edam-burger.com/images/menu/890651burger.jpg" alt=""></a>
-                                  <div class="caption">
-                                        <b>Rp. 200.000</b>
-                                        <p></p>
-                                          <a href="#masuk-ke-chart"><button class="btn-menu"> Pesan Sekarang</button> </a>
-                                          <p></p><a href="ke-menu-deskripsi-produk"><button class="btn-menu-detail"> Detail</button> </a>
-                                      </p>
-                                  </div>
-                              </div>
-                          </div>
-                          <div class="col-md-4 col-sm-6 hero-feature">
-                              <div class="thumbnail">
-                                <p></p>
-                                  <h4>Menu 1</h4>
-                                  <a href="#ke-menu-deskripsi-produk"><img class="gbr-menu" src="http://www.edam-burger.com/images/menu/890651burger.jpg" alt=""></a>
-                                  <div class="caption">
-                                        <b>Rp. 200.000</b>
-                                        <p></p>
-                                          <a href="#masuk-ke-chart"><button class="btn-menu"> Pesan Sekarang</button> </a>
-                                          <p></p><a href="ke-menu-deskripsi-produk"><button class="btn-menu-detail"> Detail</button> </a>
-                                      </p>
-                                  </div>
-                              </div>
-                          </div>
-                          <div class="col-md-4 col-sm-6 hero-feature">
-                              <div class="thumbnail">
-                                <p></p>
-                                  <h4>Menu 1</h4>
-                                  <a href="#ke-menu-deskripsi-produk"><img class="gbr-menu" src="http://www.edam-burger.com/images/menu/890651burger.jpg" alt=""></a>
-                                  <div class="caption">
-                                        <b>Rp. 200.000</b>
-                                        <p></p>
-                                          <a href="#masuk-ke-chart"><button class="btn-menu"> Pesan Sekarang</button> </a>
-                                          <p></p><a href="ke-menu-deskripsi-produk"><button class="btn-menu-detail"> Detail</button> </a>
-                                      </p>
-                                  </div>
-                              </div>
-                          </div>
-                          <div class="col-md-4 col-sm-6 hero-feature">
-                              <div class="thumbnail">
-                                <p></p>
-                                  <h4>Menu 1</h4>
-                                  <a href="#ke-menu-deskripsi-produk"><img class="gbr-menu" src="http://www.edam-burger.com/images/menu/890651burger.jpg" alt=""></a>
-                                  <div class="caption">
-                                        <b>Rp. 200.000</b>
-                                        <p></p>
-                                          <a href="#masuk-ke-chart"><button class="btn-menu"> Pesan Sekarang</button> </a>
-                                          <p></p><a href="ke-menu-deskripsi-produk"><button class="btn-menu-detail"> Detail</button> </a>
-                                      </p>
-                                  </div>
-                              </div>
-                          </div>
-
-                          <center>
-                            <!-- paging -->
-                                <div id="container">
-                                  <div class="paginate wrapper">
-                                      <ul>
-                                          <li><a href="">&lang;</a></li>
-                                          <li><a href="" class="active">1</a></li>
-                                          <li><a href="" class="inactive">2</a></li>
-                                          <li><a href="">3</a></li>
-                                          <li><a href="">4</a></li>
-                                          <li><a href="">5</a></li>
-                                      </ul>
-                                  </div>
-                                </div>
-                            </center>
-                      </div>
+                <!-- <div id="menu-list-area-active" ng-show="isSet()"> -->
+                <div>
+                  <div class="thumbnail">
+                    <div class="jdl_menu">Kategori 1 (nanti diisi kategori)</div>
+                    <p></p>
+                    <!-- mulai row -->
+                    <div class="row text-center menu-list-area">
                     </div>
-                      
-                  </div>
-                    <div ng-show="isSet(2)">
-                      <div class="thumbnail">
-                        <div class="jdl_menu">Kategori 2 (nanti diisi kategori)</div>
-                            <div class="row text-center">
-                              <div class="col-md-4 col-sm-6 hero-feature">
-                                <div class="thumbnail">
-                                  <p></p>
-                                    <h4>Menu 1</h4>
-                                    <a href="#ke-menu-deskripsi-produk"><img class="gbr-menu" src="http://2.bp.blogspot.com/-NKqOd-HVKhc/UFEhura3soI/AAAAAAAAAbc/gJLIIUtCbe4/s1600/golf+course+birthday+cake.jpg" alt=""></a>
-                                    <div class="caption">
-                                          <b>Rp. 200.000</b>
-                                          <p></p>
-                                            <a href="#masuk-ke-chart"><button class="btn-menu"> Pesan Sekarang</button> </a>
-                                            <p></p><a href="ke-menu-deskripsi-produk"><button class="btn-menu-detail"> Detail</button> </a>
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                      </div>
-                    </div>
-                      <!-- </div>
-                    </div> -->
-                  <div ng-show="isSet(3)">
-                    <div class="thumbnail">
-                      <div class="jdl_menu">Kategori 3 (nanti diisi kategori)</div>
-                        <div class="row text-center">
-                          <div class="col-md-4 col-sm-6 hero-feature">
-                                <div class="thumbnail">
-                                  <p></p>
-                                    <h4>Menu 1</h4>
-                                    <a href="#ke-menu-deskripsi-produk"><img class="gbr-menu" src="http://2.bp.blogspot.com/-NKqOd-HVKhc/UFEhura3soI/AAAAAAAAAbc/gJLIIUtCbe4/s1600/golf+course+birthday+cake.jpg" alt=""></a>
-                                    <div class="caption">
-                                          <b>Rp. 200.000</b>
-                                          <p></p>
-                                            <a href="#masuk-ke-chart"><button class="btn-menu"> Pesan Sekarang</button> </a>
-                                            <p></p><a href="ke-menu-deskripsi-produk"><button class="btn-menu-detail"> Detail</button> </a>
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                      </div>
-                    </div>
+                  </div>      
                 </div>
               </div>
             </div>
           </div>
         </div>    
     </div><!-- #primary -->
+    <script type="text/javascript">
+      jQuery(document).ready(function($){
+        
+        var first_selected_kategori_id = $("ul li.active").attr('id');
+        var id_kategori = (first_selected_kategori_id).split("_").pop();
 
+        window.doLoadMenuByKategori(id_kategori);
 
+      });
+    </script>
 <?php get_footer(); ?>

@@ -178,6 +178,10 @@ function athemes_scripts() {
 	wp_enqueue_script( 'athemes-superfish', get_template_directory_uri() . '/js/superfish.js', array( 'jquery' ) );
 	wp_enqueue_script( 'athemes-settings', get_template_directory_uri() . '/js/settings.js', array( 'jquery' ) );
 
+	wp_enqueue_script( 'onexajax', get_template_directory_uri(). '/js/onexajax.js', array('jquery'));
+
+	wp_localize_script( 'onexajax', 'OnexAjax', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ), 'security' => wp_create_nonce( 'onex-special-string')));
+
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 		wp_enqueue_script( 'comment-reply' );
 	}
@@ -193,6 +197,68 @@ function athemes_html5shiv() {
     echo '<![endif]-->' . "\n";
 }
 add_action( 'wp_head', 'athemes_html5shiv' );
+
+
+/**
+*
+*	ONEX AJAX function callback
+*
+*/
+add_action( 'wp_ajax_AjaxGetMenuByKategori', 'AjaxLoad_MenuByKategori');
+function AjaxLoad_MenuByKategori(){
+
+	if( isset($_GET['kategori'])){
+		$onex_menu_distributor_obj = new Onex_Menu_Distributor();
+		$content['menudist'] = $onex_menu_distributor_obj->GetMenuByKategori( $_GET['kategori']);
+		//var_dump(get_template_directory_uri());
+		echo getHtmlTemplate( get_template_directory(). '/ajax-templates/', 'menu-list', $content );
+		//var_dump($content,json_encode($content));
+	}
+	wp_die();
+}
+
+function getHtmlTemplate( $location, $template_name, $attributes = null ){
+	if(! $attributes) $attributes = array();
+
+	ob_start();
+	require ( $location . $template_name . '.php');
+	$html = ob_get_contents();
+	ob_end_clean();
+	echo $html;
+}
+
+function get_distributor_by_id(){
+	$onex_distributor_obj = new Onex_Distributor();
+	$onex_kategori_menu_obj = new Onex_Kategori_Menu();
+	$content['distributor'] = $onex_distributor_obj->GetDistributor( $_GET['distributor']);
+	$content['katmenu'] = $onex_kategori_menu_obj->GetKategoriByDistributor( $_GET['distributor'] );
+
+	return $content;
+}
+
+function get_kategori_menu(){
+	$katmenu_obj = new Onex_Kategori_Menu();
+	$content = $katmenu_obj->GetKategoriMenuList();
+	return $content;
+}
+
+function get_jenis_delivery(){
+	$delivery_obj = new Onex_Jenis_Delivery();
+	$content['katdel'] = $delivery_obj->DeliveryList();
+	return $content;
+}
+
+function get_distributor(){
+	$distributor_obj = new Onex_Distributor();
+	$content = $distributor_obj->DistributorList();
+	return $content;
+}
+
+function get_distributor_by_template($template_name){
+	$distributor = new Onex_Distributor();
+	$content['distributor'] = $distributor->GetDistributorByTemplate($template_name);
+	return $content;
+}
 
 /**
  * Custom functions that act independently of the theme templates.

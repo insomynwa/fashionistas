@@ -24,31 +24,7 @@ get_header(); ?>
           </div>
         </div>
         <?php endforeach; ?>
-        <?php endif; ?>   
-        
-        <!-- <div class="col-lg-4 col-sm-6">
-          <div class="thumbnail listresto">
-            <a href="/template-overviews/creative" class="post-image-link">
-              <p><a href="http://localhost/oneexpress1/menu-list/"><img width="100%" height="250" src="http://www.startyourrestaurantbusiness.com/wp-content/uploads/2015/03/cheese-cake-factory-logo.jpeg"></a></p>
-              
-            </a>
-            <div class="caption namadistributor">
-              <center><h2>Nama Toko</h2> </center>
-            </div>
-          </div>
-        </div>   
-
-        <div class="col-lg-4 col-sm-6">
-          <div class="thumbnail listresto">
-            <a href="/template-overviews/creative" class="post-image-link">
-              <p><a href="http://localhost/oneexpress1/menu-list/"><img width="100%" height="250" src="http://www.startyourrestaurantbusiness.com/wp-content/uploads/2015/03/cheese-cake-factory-logo.jpeg"></a></p>
-              
-            </a>
-            <div class="caption namadistributor">
-             <center><h2>Nama Toko</h2> </center>
-            </div>
-          </div>
-        </div>    -->
+        <?php endif; ?>
         
     </div><!-- #primary -->
 
