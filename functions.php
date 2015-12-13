@@ -201,19 +201,73 @@ add_action( 'wp_head', 'athemes_html5shiv' );
 
 /**
 *
+* Get Something like DateTime.Now.Ticks in .NET
+*
+*/
+function millitime(){
+	$microtime = microtime();
+	$comps = explode(' ', $microtime);
+
+	// Note: Using a string here to prevent loss of precision in case of "overflow" (PHP converts it to a double)
+	return sprintf('%d%03d', $comps[1], $comps[0] * 1000);
+}
+
+/**
+*
 *	ONEX AJAX function callback
 *
 */
 add_action( 'wp_ajax_AjaxGetMenuByKategori', 'AjaxLoad_MenuByKategori');
+add_action( 'wp_ajax_nopriv_AjaxGetMenuByKategori', 'AjaxLoad_MenuByKategori');
 function AjaxLoad_MenuByKategori(){
 
 	if( isset($_GET['kategori'])){
+  		check_ajax_referer( 'onex-special-string', 'security' );
 		$onex_menu_distributor_obj = new Onex_Menu_Distributor();
 		$content['menudist'] = $onex_menu_distributor_obj->GetMenuByKategori( $_GET['kategori']);
-		//var_dump(get_template_directory_uri());
+		//var_dump(get_current_user_id());
 		echo getHtmlTemplate( get_template_directory(). '/ajax-templates/', 'menu-list', $content );
 		//var_dump($content,json_encode($content));
 	}
+	wp_die();
+}
+add_action( 'wp_ajax_AjaxCustomerPesanMenu', 'AjaxPost_Customer_PesanMenu');
+function AjaxPost_Customer_PesanMenu(){
+
+	if( is_user_logged_in() ){
+		if( isset($_POST['menu']) && $_POST['menu'] > 0) {
+
+			$customer_id = get_current_user_id();
+			$menudel_id = $_POST['menu'];
+
+			$onex_invoice_obj = new Onex_Invoice();
+			$invoice_id = $onex_invoice_obj->GetIdInvoice( $customer_id, $menudel_id);
+			$nilai_menu = 0;
+			if($invoice_id > 0){ // has a invoice
+				// add data pesanan, update invoice
+				$data['menudel_id'] = $menudel_id;
+				$data['kuantiti'] = 1;
+				$data['invoice_id'] = $invoice_id;
+
+				$onex_pemesanan_menu_obj = new Onex_Pemesanan_Menu();
+				$nilai_menu = $onex_pemesanan_menu_obj->AddPemesananMenu($data);
+
+			}else{ // doesn't has a invoice
+				// create invoice, add data pesanan
+				$data['menudel_id'] = $menudel_id;
+				$data['kuantiti'] = 1;
+				$invoice_id = $onex_invoice_obj->CreateInvoice( $customer_id, $menudel_id );
+				$data['invoice_id'] = $invoice_id;
+
+				$onex_pemesanan_menu_obj = new Onex_Pemesanan_Menu();
+				$nilai_menu = $onex_pemesanan_menu_obj->AddPemesananMenu($data);
+
+			}
+
+			$onex_invoice_obj->UpdateSubtotalInvoice( $invoice_id, $nilai_menu);
+		}
+	}
+	
 	wp_die();
 }
 

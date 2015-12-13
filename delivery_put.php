@@ -1,7 +1,6 @@
 <?php 
 /* Template Name: delivery put */
-get_header(); ?>
-                           
+get_header(); ?>      
     <div class="row">
       <h2>Pilih Restaaurant</h2>
         <?php
@@ -15,7 +14,7 @@ get_header(); ?>
         <div class="col-lg-4 col-sm-6">
           <div class="thumbnail listresto">
             <a href="/template-overviews/creative" class="post-image-link">
-              <p><a href="<?php echo get_home_url(); ?>/menu-list?distributor=<?php echo $distributor->id_dist; ?>"><img width="100%" height="250" src="<?php echo $distributor->gambar_dist; ?>"></a></p>
+              <p><a href="<?php echo get_home_url(); ?>/menu-list?distributor=<?php echo $distributor->id_dist; ?>"><img width="100%" height="250" src="<?php echo $distributor->gambar_dist; ?>?<?php echo millitime(); ?>"></a></p>
               <!-- gambar nanti diambil dari inputan admin yang menu distributor - delivery put -->
             </a>
             <div class="caption namadistributor">
@@ -25,7 +24,6 @@ get_header(); ?>
         </div>
         <?php endforeach; ?>
         <?php endif; ?>
-        
     </div><!-- #primary -->
 
 <?php get_footer(); ?>

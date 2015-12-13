@@ -25,14 +25,23 @@ angular.module('tabApp', [])
 }]);
 
 
-</script>                    
+</script> 
+<?php
+$tahun = date('Y');
+    $tahun %= 2000;
+    $bulan = date('n');
+    $tgl = date('j');
+    $jam = date('G');
+    $nomor = $tahun+$bulan+$tgl+$jam;
+    echo $tahun .' '. $bulan . ' ' . $tgl . ' ' . ' ' . $jam . ' - ' . date("D M j G:i:s T Y", time()) . ' - ' . time();
+?>                   
     <div class="row">
      <!-- <h2>Nama Restaurant</h2>  -->
         <div class="col-lg-12 col-sm-12">
           <div class="col-lg-3 col-sm-6">
             <div class="thumbnail listresto">
               <a href="/template-overviews/creative" class="post-image-link">
-               <img width="100%" height="250" src="<?php echo $gambar; ?>">
+               <img width="100%" height="250" src="<?php echo $gambar; ?>?<?php echo millitime(); ?>">
                 <!-- gambar nanti diambil dari inputan admin yang menu distributor - delivery put -->
               </a>
             </div>
@@ -55,7 +64,7 @@ angular.module('tabApp', [])
                 <ul class="nav nav-pills nav-stacked">
                   <?php if( !is_null($content['katmenu']) && sizeof($content['katmenu']) > 0 ): ?>
                   <?php $nmr=1;foreach ( $content['katmenu'] as $kategori): ?>
-                    <li ng-class="{ active: isSet(<?php echo $nmr; ?>) }" class="katlink" id="katmenu-list_<?php echo $kategori->id_katmenu; ?>">
+                    <li ng-class="{ active: isSet(<?php echo $nmr; ?>) }" class="kat-link" id="katmenu-list_<?php echo $kategori->id_katmenu; ?>">
                       <a href ng-click="setTab(<?php echo $nmr; ?>)"><?php echo $kategori->nama_katmenu; ?></a>
                     </li>
                     <?php $nmr++;endforeach; ?>
@@ -64,7 +73,7 @@ angular.module('tabApp', [])
                   <?php endif; ?>
                 </ul>
               </div>
-              <div class="col-md-10">
+              <div id="menu-area" class="col-md-10">
                 <!-- <div id="menu-list-area-active" ng-show="isSet()"> -->
                 <div>
                   <div class="thumbnail">
@@ -84,9 +93,13 @@ angular.module('tabApp', [])
       jQuery(document).ready(function($){
         
         var first_selected_kategori_id = $("ul li.active").attr('id');
-        var id_kategori = (first_selected_kategori_id).split("_").pop();
+        //alert(first_selected_kategori_id);
+        if( first_selected_kategori_id != undefined ){
+          var id_kategori = (first_selected_kategori_id).split("_").pop();
 
-        window.doLoadMenuByKategori(id_kategori);
+          window.doLoadMenuByKategori(id_kategori);
+        }else{
+          $("div.jdl_menu").html("Belum ada menu");        }
 
       });
     </script>

@@ -1,6 +1,6 @@
 jQuery(document).ready(function($){
 
-	$(".katlink").click(function(){
+	$(".kat-link").click(function(){
 
 		var id_kategori = (this.id).split("_").pop();
 
@@ -13,7 +13,8 @@ jQuery(document).ready(function($){
 
 		var data = {
 			'action': 'AjaxGetMenuByKategori',
-			'kategori' : id_kategori
+			'kategori' : id_kategori,
+			'security' : OnexAjax.security
 		};
 
 		//var isactive = $("li.katlink").hasClass("active");
