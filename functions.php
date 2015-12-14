@@ -231,43 +231,62 @@ function AjaxLoad_MenuByKategori(){
 	}
 	wp_die();
 }
+
 add_action( 'wp_ajax_AjaxCustomerPesanMenu', 'AjaxPost_Customer_PesanMenu');
 function AjaxPost_Customer_PesanMenu(){
+
+	$status = false;
 
 	if( is_user_logged_in() ){
 		if( isset($_POST['menu']) && $_POST['menu'] > 0) {
 
 			$customer_id = get_current_user_id();
+			$distributor_id = $_POST['distributor'];
 			$menudel_id = $_POST['menu'];
 
 			$onex_invoice_obj = new Onex_Invoice();
-			$invoice_id = $onex_invoice_obj->GetIdInvoice( $customer_id, $menudel_id);
+			$invoice_id = $onex_invoice_obj->GetIdInvoiceByDistributor( $customer_id, $distributor_id);
 			$nilai_menu = 0;
-			if($invoice_id > 0){ // has a invoice
-				// add data pesanan, update invoice
-				$data['menudel_id'] = $menudel_id;
-				$data['kuantiti'] = 1;
-				$data['invoice_id'] = $invoice_id;
 
-				$onex_pemesanan_menu_obj = new Onex_Pemesanan_Menu();
-				$nilai_menu = $onex_pemesanan_menu_obj->AddPemesananMenu($data);
-
-			}else{ // doesn't has a invoice
-				// create invoice, add data pesanan
-				$data['menudel_id'] = $menudel_id;
-				$data['kuantiti'] = 1;
-				$invoice_id = $onex_invoice_obj->CreateInvoice( $customer_id, $menudel_id );
-				$data['invoice_id'] = $invoice_id;
-
-				$onex_pemesanan_menu_obj = new Onex_Pemesanan_Menu();
-				$nilai_menu = $onex_pemesanan_menu_obj->AddPemesananMenu($data);
-
+			if( $invoice_id == 0){
+				$invoice_id = $onex_invoice_obj->CreateInvoice( $customer_id, $distributor_id );
 			}
 
-			$onex_invoice_obj->UpdateSubtotalInvoice( $invoice_id, $nilai_menu);
+			$data['menudel_id'] = $menudel_id;
+			$data['kuantiti'] = 1;
+			$data['invoice_id'] = $invoice_id;
+
+			$onex_pemesanan_menu_obj = new Onex_Pemesanan_Menu();
+			if( ! $onex_pemesanan_menu_obj->SudahDiPesan( $invoice_id, $menudel_id )){
+				$nilai_menu = $onex_pemesanan_menu_obj->AddPemesananMenu($data);
+
+				$onex_invoice_obj->UpdateSubtotalInvoice( $invoice_id, $nilai_menu);
+
+				$status = true;
+			}
 		}
 	}
+	echo $status;
 	
+	wp_die();
+}
+
+add_action( 'wp_ajax_AjaxGetChartTable', 'AjaxLoad_ChartUser');
+function AjaxLoad_ChartUser(){
+	if( is_user_logged_in()){
+		$customer_id = get_current_user_id();
+		$invoice_obj = new Onex_Invoice();
+		$content['invoice'] = $invoice_obj->GetInvoiceAktifByUser( $customer_id );
+//var_dump($content['invoice']);
+		$pemesanan_menu_obj = new Onex_Pemesanan_Menu();
+		foreach( $content['invoice'] as $invoice => $value){
+			//var_dump($invoice);
+			//echo $value->nama_dist;
+			$content['menu'][$value->nama_dist] = $pemesanan_menu_obj->GetPesananMenuByInvoice( $value->id_invoice);
+		}
+
+		echo getHtmlTemplate( get_template_directory(). '/ajax-templates/', 'chart-table', $content );
+	}
 	wp_die();
 }
 
@@ -313,6 +332,16 @@ function get_distributor_by_template($template_name){
 	$content['distributor'] = $distributor->GetDistributorByTemplate($template_name);
 	return $content;
 }
+
+/*function get_active_invoice_pesanan(){
+	if(is_user_logged_in()){
+		$customer_id = get_current_user_id();
+		$invoice_obj = new Onex_Invoice();
+		$content['invoice'] = $invoice_obj->GetInvoiceAktifByUser( $customer_id );
+		return $content;
+	}
+	return null;
+}*/
 
 /**
  * Custom functions that act independently of the theme templates.

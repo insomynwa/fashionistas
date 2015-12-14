@@ -1,5 +1,7 @@
 <?php if( !is_null($attributes['menudist']) && sizeof($attributes['menudist'])>0): ?>
+  <?php $distributor = 0; ?>
   <?php foreach($attributes['menudist'] as $menu): ?>
+  <?php if($distributor != $menu->distributor_id) $distributor = $menu->distributor_id; ?>
 <div class="col-md-4 col-sm-6 hero-feature">
   <div class="thumbnail">
     <p></p>
@@ -42,12 +44,13 @@ jQuery(document).ready( function($) {
     // save to invoice
     var data = {
       'action'   : 'AjaxCustomerPesanMenu',
+      'distributor' : <?php echo $distributor; ?>,
       'menu' : id_menudel,
       'security' : OnexAjax.security
     }
 
     $.post(OnexAjax.ajaxurl, data, function(response) {
-      
+      //$(this).
     });
     //alert(id_menudel + " <?php echo is_user_logged_in(); ?>");
     <?php else: ?>

@@ -27,13 +27,33 @@ angular.module('tabApp', [])
 
 </script> 
 <?php
-$tahun = date('Y');
+date_default_timezone_set('Asia/Jakarta');
+
+$date1 = new DateTime('2015-12-11 21:05:59');
+$date2 = new DateTime('2015-12-13 21:09:20');
+
+$diff = $date2->diff($date1);
+$hours = $diff->h;
+$hours = $hours + ($diff->days*24);
+$minutes = $diff->i;
+$minutes = $minutes + ($diff->days*24);
+$seconds = $diff->s;
+$seconds = $seconds + ($diff->days*24);
+
+//echo $hours . ":" . $minutes . ":" . $seconds;
+/*$tahun = date('Y');
     $tahun %= 2000;
     $bulan = date('n');
     $tgl = date('j');
-    $jam = date('G');
+    $jam = date('G', current_time( 'mysql'));
     $nomor = $tahun+$bulan+$tgl+$jam;
-    echo $tahun .' '. $bulan . ' ' . $tgl . ' ' . ' ' . $jam . ' - ' . date("D M j G:i:s T Y", time()) . ' - ' . time();
+    echo $tahun .' '. $bulan . ' ' . $tgl . ' ' . ' ' . $jam . ' - ' . date("D M j G:i:s T Y", time()) . ' - ' . time();*/
+
+/*echo "current_time( 'mysql' ) returns local site time: " . current_time( 'mysql' ) . '<br />';
+echo "current_time( 'mysql', 1 ) returns GMT: " . current_time( 'mysql', 1 ) . '<br />';
+echo "current_time( 'timestamp' ) returns local site time: " . date( 'Y-m-d H:i:s', current_time( 'timestamp', 0 ) );
+echo "current_time( 'timestamp', 1 ) returns GMT: " . date( 'Y-m-d H:i:s', current_time( 'timestamp', 1 ) );*/
+
 ?>                   
     <div class="row">
      <!-- <h2>Nama Restaurant</h2>  -->
