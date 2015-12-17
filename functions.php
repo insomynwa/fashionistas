@@ -198,6 +198,16 @@ function athemes_html5shiv() {
 }
 add_action( 'wp_head', 'athemes_html5shiv' );
 
+add_action('after_setup_theme', 'remove_admin_bar');
+function remove_admin_bar() {
+
+	if (!current_user_can('manage_options') && !is_admin()) {
+
+	  show_admin_bar(false);
+
+	}
+
+}
 
 /**
 *
@@ -276,18 +286,137 @@ function AjaxLoad_ChartUser(){
 	if( is_user_logged_in()){
 		$customer_id = get_current_user_id();
 		$invoice_obj = new Onex_Invoice();
+		$data_pembeli_obj = new Onex_Data_Pembeli();
+		$ongkir_obj = new Onex_Ongkos_Kirim();
 		$content['invoice'] = $invoice_obj->GetInvoiceAktifByUser( $customer_id );
-//var_dump($content['invoice']);
+		$content['alamat'] = $data_pembeli_obj->GetDataPembeliByUser( $customer_id );
+		$tarifPerKm = $ongkir_obj->GetTarifPerKm();
+
+		$to = "";
+		$from = $content['alamat']['alamat_detail_datapembeli'];
+
 		$pemesanan_menu_obj = new Onex_Pemesanan_Menu();
 		foreach( $content['invoice'] as $invoice => $value){
-			//var_dump($invoice);
-			//echo $value->nama_dist;
 			$content['menu'][$value->nama_dist] = $pemesanan_menu_obj->GetPesananMenuByInvoice( $value->id_invoice);
+			$to = $value->alamat_dist;
+			//$jarak = getJarakKm( $from, $to);
+			//$content['jarak'][$value->nama_dist] = $jarak;
+			//$content['ongkir'][$value->nama_dist] = $jarak * $tarifPerKm;
 		}
+		//var_dump($from, $to);
+		//var_dump( getJarakKm($from, $to) );
+		//getJarakKm($from, $to);
 
 		echo getHtmlTemplate( get_template_directory(). '/ajax-templates/', 'chart-table', $content );
 	}
 	wp_die();
+}
+
+add_action( 'wp_ajax_AjaxGetOngkir', 'AjaxLoad_Ongkir');
+function AjaxLoad_Ongkir(){
+	if( is_user_logged_in()){
+		if(isset( $_GET['distributor'] )){
+			$distributor_id = $_GET['distributor'];
+			$customer_id = get_current_user_id();
+
+			$distributor_obj = new Onex_Distributor();
+			$data_pembeli_obj = new Onex_Data_Pembeli();
+			$ongkir_obj = new Onex_Ongkos_Kirim();
+			$tarifDasar = $ongkir_obj->GetTarifPerKm();
+			$alamat_to = $data_pembeli_obj->GetAlamatCustomer( $customer_id);
+			
+			$data = array();
+			//var_dump($distributor_id);
+			for($i = 0; $i<sizeof($distributor_id); $i++){
+				//var_dump($distributor_id); wp_die();
+
+
+				$alamat_from = $distributor_obj->GetAlamatDistributor( $distributor_id[$i]);
+
+				$jarak = getJarakKm( $alamat_from, $alamat_to) / 1000;
+
+				if($jarak < 5){
+					$data[$distributor_id[$i]]['ongkir'] = 5000;
+				}else{
+
+					$n5km = intval($jarak) / 5;
+					if($n5km<1) $n5km=0;
+					$mod5km = intval($jarak) % 5;
+					$data[$distributor_id[$i]]['ongkir'] = (intval($n5km) * 5000) + ($mod5km * $tarifDasar);
+				}
+				$data[$distributor_id[$i]]['jarak'] = $jarak;
+			}
+
+			echo wp_json_encode($data);
+		}
+	}
+	wp_die();
+}
+
+add_action( 'wp_ajax_AjaxGetDataCustomer', 'AjaxLoad_DataCustomer');
+function AjaxLoad_DataCustomer(){
+	if( is_user_logged_in()){
+		$customer_id = get_current_user_id();
+		$data_pembeli_obj = new Onex_Data_Pembeli();
+
+		$data = array();
+		$data_pengiriman = $data_pembeli_obj->GetDataPembeliByUser( $customer_id );
+
+		$data['id'] = $data_pengiriman['id_datapembeli'];
+		$data['nama'] = $data_pengiriman['nama_datapembeli'];
+		$data['telp'] = $data_pengiriman['telp_datapembeli'];
+		$data['alamat_area'] = $data_pengiriman['nama_alamatarea'];
+		$data['detail_alamat'] = $data_pengiriman['alamat_detail_datapembeli'];
+
+		echo wp_json_encode($data);
+	}
+	wp_die();
+}
+
+add_action( 'wp_ajax_AjaxUpdateDataCustomer', 'AjaxUpdate_DataCustomer');
+function AjaxUpdate_DataCustomer(){
+	if( is_user_logged_in()){
+
+		if( isset($_POST['customer']) ){
+			$customer_id = get_current_user_id();
+			$data = array(
+				'nama' => sanitize_text_field($_POST['nama']),
+				'telp' => sanitize_text_field($_POST['telp']),
+				'detail_alamat' => sanitize_text_field($_POST['detail_alamat'])
+				);
+
+			$data_pembeli_obj = new Onex_Data_Pembeli();
+			$result = $data_pembeli_obj->UpdateDataPembeliByUser( $_POST['customer'], $data, $customer_id );
+
+		}
+		/*$customer_id = get_current_user_id();
+		$data_pembeli_obj = new Onex_Data_Pembeli();
+
+		$data = array();
+		$data_pengiriman = $data_pembeli_obj->GetDataPembeliByUser( $customer_id );
+
+		$data['id'] = $data_pengiriman['id_datapembeli'];
+		$data['nama'] = $data_pengiriman['nama_datapembeli'];
+		$data['telp'] = $data_pengiriman['telp_datapembeli'];
+		$data['alamat_area'] = $data_pengiriman['nama_alamatarea'];
+		$data['detail_alamat'] = $data_pengiriman['alamat_detail_datapembeli'];*/
+
+		echo wp_json_encode($result);
+	}
+	wp_die();
+}
+
+function getJarakKm($from, $to) {
+	$API_KEY = "AIzaSyAGJKzSI54D-9Fm6zW0zD4GttumyM5oXxQ";
+	$from = urlencode($from);
+	$to = urlencode($to);
+	$url_google_distance_matrix_API = "https://maps.googleapis.com/maps/api/distancematrix/json?origins=".$from."&destinations=".$to."&language=id-ID&key=".$API_KEY;
+	//var_dump($url_google_distance_matrix_API);
+	$result = file_get_contents($url_google_distance_matrix_API);
+
+	$data = json_decode( $result, true);
+
+	return ($data['rows'][0]['elements'][0]['distance']['value']);
 }
 
 function getHtmlTemplate( $location, $template_name, $attributes = null ){
@@ -330,6 +459,12 @@ function get_distributor(){
 function get_distributor_by_template($template_name){
 	$distributor = new Onex_Distributor();
 	$content['distributor'] = $distributor->GetDistributorByTemplate($template_name);
+	return $content;
+}
+
+function get_user_data_detail(){
+	$data_user = new Onex_Data_Pembeli();
+	$content['data'] = $data_user->GetDataPembeliByUser( get_current_user_id() );
 	return $content;
 }
 

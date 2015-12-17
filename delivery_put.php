@@ -9,7 +9,7 @@ get_header(); ?>
           $template_name = get_page_template_slug($post_id);
         ?>
         <?php $content = get_distributor_by_template($template_name); ?>
-        <?php if( $content!=null ): ?>
+        <?php if( $content!=null && sizeof($content['distributor'])>0 ): ?>
         <?php foreach($content['distributor'] as $distributor): ?>
         <div class="col-lg-4 col-sm-6">
           <div class="thumbnail listresto">

@@ -13,6 +13,7 @@ $('#myModal').on('shown.bs.modal', function () {
   $('#myInput').focus()
 })
 </script>
+<?php $user_info = get_userdata(get_current_user_id()); ?>
 	<h2>My Profile</h2>
     <div class="spasi"></div>
 	<div class="row">
@@ -21,7 +22,7 @@ $('#myModal').on('shown.bs.modal', function () {
           <div class="col-lg-4 col-sm-6">
             <div class="thumbnail">
                 <b>Informasi Kontak</b>
-                alamatemail@gmail.com
+                <?php echo $user_info->user_email; ?>
                 <div align="right"><a href data-toggle="modal" data-target="#change_account">Ubah</a></div>
                 <p></p>
             </div>
@@ -52,16 +53,20 @@ $('#myModal').on('shown.bs.modal', function () {
             <p></p>
             <!-- <div align="right"><button>tambah alamat</button></div>
             <p></p> -->
-
+            <?php 
+              $alamat = get_user_data_detail(); 
+            ?>
+            <?php if( sizeof($alamat['data']) > 0 ): ?>
             <div class="thumbnail">
                 <div class="radio">
-                  <label><input type="radio" name="optradio"><b>Mampang, jakarta selatan</b></label><p></p>
-                  <p>perumahan blabalbalalala RT 01 Rw 12 jl. maju sedikit</p>
-                  <p>089911112222, namapenerima</p>
+                  <label><input type="radio" name="optradio"><b><?php echo $alamat['data']['nama_alamatarea']; ?></b></label><p></p>
+                  <p><?php echo $alamat['data']['alamat_detail_datapembeli']; ?></p>
+                  <p><?php echo $alamat['data']['telp_datapembeli']; ?>, <?php echo $alamat['data']['nama_datapembeli']; ?></p>
                   <div align="right"><a href data-toggle="modal" data-target="#change_alamat">Ubah</a> | <a href="#">Hapus</a></div>
                 </div>
             </div>
-            <div class="thumbnail">
+            <?php endif; ?>
+            <!-- <div class="thumbnail">
                 <div class="radio">
                   <label><input type="radio" name="optradio"><b>kebon sirih, jakarta pusat</b></label><p></p>
                   <p>perumahan dasfdsfdsgfsgsgfsfasdf RT 01 Rw 12 jl. sdfsdfsdfsdt</p>
@@ -79,7 +84,7 @@ $('#myModal').on('shown.bs.modal', function () {
             </div>
             <div align="center">
                 paging
-            </div>
+            </div> -->
           </div>   
         </div>    
     </div><!-- #primary -->

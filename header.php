@@ -61,6 +61,7 @@
 		<!-- .site-branding --></div>
 
 		<?php if ( ! dynamic_sidebar( 'sidebar-2' ) ) : ?>
+		<?php if(is_user_logged_in()): ?>
 		<div class="account-id"> 
 			<div class="dropdown">
 			    <button class="btn dropdown-toggle" id="menu1" type="button" data-toggle="dropdown">Profile
@@ -68,11 +69,12 @@
 			    <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
 			     <li role="presentation"><a role="menuitem" tabindex="-1" href="#">My Profile</a></li>
 			      <li role="presentation"><a role="menuitem" tabindex="-1" href="<?php echo get_home_url().'/chart/'; ?>">Pesanan Saya</a></li>
-			      <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Logout</a></li>  
+			      <li role="presentation"><a role="menuitem" tabindex="-1" href="<?php echo wp_logout_url( home_url() ); ?>">Logout</a></li>  
 			    </ul>
 			</div>
 			  <br>
 		</div>
+		<?php endif; ?>
 		<?php endif; ?>
 	<!-- #masthead --></header>
 

@@ -15,32 +15,32 @@
       <th scope="row"><?php echo $nomor; ?></th>
       <td><img width="200px"src="<?php echo $invoice->gambar_dist; ?>"></td>
       <td>
+        <?php $total_nilai_menu = 0; ?>
         <?php foreach( $attributes['menu'][$invoice->nama_dist] as $menu): ?>
         <br><a href="#deskripsi_barang"><?php echo $menu->nama_menudel; ?> <br></a>
         <input class="countx" type="number" min="1" max="9999" value="<?php echo $menu->jumlah_pesanan; ?>" style="font-size:12pt;height:30px"/>
         <a href="#hapus-dalam-list">&nbsp<img width="20" src="http://findicons.com/files/icons/99/office/128/delete.png"></a>
+        <?php $total_nilai_menu += ($menu->nilai_pesanan); ?>
         <?php endforeach; ?>
-        <!-- <br><a href="#deskripsi_barang">Es teh manis <br></a>
-        <input class="countx" type="number" min="1" max="9999" value="1" style="font-size:12pt;height:30px"/><a href="#hapus-dalam-list">&nbsp<img width="20" src="http://findicons.com/files/icons/99/office/128/delete.png"></a>
-        <br><a href="#deskripsi_barang">kelapa muda <br></a>
-        <input class="countx" type="number" min="1" max="9999" value="1" style="font-size:12pt;height:30px"/><a href="#hapus-dalam-list">&nbsp<img width="20" src="http://findicons.com/files/icons/99/office/128/delete.png"></a>
-        <br><a href="#deskripsi_barang">mi goreng <br></a>
-        <input class="countx" type="number" min="1" max="9999" value="1" style="font-size:12pt;height:30px"/><a href="#hapus-dalam-list">&nbsp<img width="20" src="http://findicons.com/files/icons/99/office/128/delete.png"></a> -->
       </td>
       <td>
-        <p></p><b>kebon sirih, jakpus</b>
-        <br>perumahan komplek blablabla jl.sempak rombeng no 10
+        <?php if( sizeof($attributes['alamat']) > 0 ): ?>
+        <p></p><b><?php //echo $attributes['alamat']['nama_alamatarea']; ?></b>
+        <br><span class="detail-alamat-area"><?php echo $attributes['alamat']['alamat_detail_datapembeli']; ?></span>
         <div class="divider"></div>
-        <p>nama penerima, 089999998888</p>
+        <p class="kontak-area"><?php echo $attributes['alamat']['nama_datapembeli']; ?>, <?php echo $attributes['alamat']['telp_datapembeli']; ?></p>
+        <?php else: ?>
+        <p>Anda belum mengisi data alamat.</p>
+        <?php endif; ?>
         <div align="right">
-          <a href data-toggle="modal" data-target="#myModal">Ubah Alamat</a>
+          <a href data-toggle="modal" data-target="#myModal" class="ubah-alamat-link">Ubah Alamat</a>
         </div>
       </td>
       <td>
-        <br>Subtotal :  <b>Rp.<?php echo $invoice->nilai_invoice; ?></b>
-        <br>Biaya Pengiriman :  <b>Rp.1xxx.xxx</b>
+        <br>Subtotal :  <b>Rp.<?php echo $total_nilai_menu; ?></b>
+        <br>Biaya Pengiriman :  <b><span id="ongkir-area-id_<?php echo $invoice->distributor_id; ?>" class="ongkir-area">proses perhitungan</span><span id="jarak-area-id_<?php echo $invoice->distributor_id; ?>" class="jarak-area"></span></b>
         <div class="divider"></div>
-        <br><b>Total (Termasuk PPN):<font color="red"><h2>Rp. 1xxxxx</h2></font> </b> 
+        <br><b>Total (Termasuk PPN):<font color="red"><h2 id="total-area-id_<?php echo $invoice->distributor_id; ?>" class="total-area">proses perhitungan</h2></font> </b> 
         <p></p>
         <div class="spasi"></div>
         <p>
@@ -62,11 +62,59 @@
     <?php endif; ?>
   </tbody>
 </table>
+<!-- POPUP MODAL -->
+  <div class="modal fade" id="myModal" role="dialog">
+    <div>
+      <form class="onexform modal-data-pengiriman-form">
+        <fieldset>
+            <legend>Informasi alamat pengiriman</legend>
+
+            <label for="email">Nama penerima</label>
+            <input id="modal-nama-customer" type="text" required placeholder="nama penerima">
+
+            <label for="password">No. telp</label>
+            <input id="modal-telp-customer" type="text" placeholder="No telp">
+
+            <!-- <label for="alamat">Alamat</label> --> <!-- Pake Ajax kaya JNE -->
+            <!-- <input id="modal-alamat-area-customer" type="text" placeholder="alamat"> -->
+
+            <label for="alamat_detail">Alamat detail</label>
+            <input id="modal-detail-alamat-customer" height="300" type="text" placeholder="perumahan, jalan, RT, RW">
+            <input type="hidden" id="modal-id-customer" />
+            <p></p>
+            <button type="submit">Submit</button>
+        </fieldset>
+    </form>
+    </div>
+  </div>
+  
+</div>
 <script>
 function myFunction() {
     var x = document.getElementById("myTime").value;
     document.getElementById("demo").innerHTML = x;
 }
 
+jQuery(document).ready(function($){
+  window.doHitungPembayaran();
+
+  $("a.ubah-alamat-link").click(function(){
+    window.doLoadDataPengiriman();
+  });
+
+  $("form.modal-data-pengiriman-form").on('submit',function(){
+    event.preventDefault();
+    //alert("HELLO");
+    var data = [];
+    var customer = $("input#modal-id-customer").val();
+    data['nama'] = $("input#modal-nama-customer").val();
+    data['telp'] = $("input#modal-telp-customer").val();
+    //data['alamat_area'] = $("input#modal-alamat-area-customer").val();
+    data['detail_alamat'] = $("input#modal-detail-alamat-customer").val();
+
+    window.doUpdateDataCustomer( customer, data);
+  });
+  
+});
 
 </script> 
