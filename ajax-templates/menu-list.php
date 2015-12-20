@@ -10,7 +10,11 @@
     <div class="caption">
       <b>Rp. <?php echo $menu->harga_menudel ?></b>
       <p></p>
+      <?php if( is_user_logged_in() ): ?>
       <a id="menu-pesan-button_<?php echo $menu->id_menudel; ?>" class="menu-pesan-sekarang"><button class="btn-menu"> Pesan Sekarang</button> </a>
+      <?php else: ?>
+      <a class="menu-pesan-sekarang" href="<?php echo wp_login_url(); ?>"><button class="btn-menu"> Pesan Sekarang</button> </a>
+      <?php endif; ?>
       <p></p><a href="ke-menu-deskripsi-produk"><button class="btn-menu-detail"> Detail</button> </a></p>
     </div>
   </div>
@@ -50,7 +54,10 @@ jQuery(document).ready( function($) {
     }
 
     $.post(OnexAjax.ajaxurl, data, function(response) {
-      //$(this).
+        var result = jQuery.parseJSON(response);
+        if( result.status != true){
+            alert(result.message);
+        }
     });
     //alert(id_menudel + " <?php echo is_user_logged_in(); ?>");
     <?php else: ?>

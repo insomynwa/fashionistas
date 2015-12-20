@@ -1,6 +1,6 @@
 <?php 
 /* Template Name: chart */
-get_header(); ?>                     
+get_header(); ?>                    
     <div class="row">
       <h2>Chart Belanja</h2>
         <div id="chart-table-area" class="col-lg-12 col-sm-6">

@@ -8,11 +8,6 @@
 */
 
 get_header(); ?>
-<script type="text/javascript">
-$('#myModal').on('shown.bs.modal', function () {
-  $('#myInput').focus()
-})
-</script>
 <?php $user_info = get_userdata(get_current_user_id()); ?>
 	<h2>My Profile</h2>
     <div class="spasi"></div>
@@ -175,6 +170,13 @@ $('#myModal').on('shown.bs.modal', function () {
         <p></p>
     </div>
 </div>
-    
+
+<script type="text/javascript">
+jQuery(document).ready( function( $) {
+  $('#myModal').on('shown.bs.modal', function(){
+    $('#myInput').focus();
+  });
+});
+</script>
     
 <?php get_footer(); ?>
