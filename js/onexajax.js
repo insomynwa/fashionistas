@@ -21,9 +21,10 @@ jQuery(document).ready(function($){
 			}
 			)
 			.done(function(response){
-
-				if(response['status']){
-					if(response['code'] == 1){
+				var result = jQuery.parseJSON(response);
+				//alert(result.status);
+				if(result.status == true){
+					if(result.code == 1){
 				        $("span.detail-alamat-area").html(custdata['detail_alamat']);
 				        $("p.kontak-area").html(custdata['nama'] + ", " + custdata['telp']);
 				        $("span.ongkir-area").html("proses perhitungan");
