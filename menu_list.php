@@ -27,7 +27,7 @@ angular.module('tabApp', [])
 
 </script> 
 <?php
-date_default_timezone_set('Asia/Jakarta');
+/*date_default_timezone_set('Asia/Jakarta');
 
 $date1 = new DateTime('2015-12-11 21:05:59');
 $date2 = new DateTime('2015-12-13 21:09:20');
@@ -38,7 +38,7 @@ $hours = $hours + ($diff->days*24);
 $minutes = $diff->i;
 $minutes = $minutes + ($diff->days*24);
 $seconds = $diff->s;
-$seconds = $seconds + ($diff->days*24);
+$seconds = $seconds + ($diff->days*24);*/
 
 //echo $hours . ":" . $minutes . ":" . $seconds;
 /*$tahun = date('Y');
@@ -74,8 +74,12 @@ echo "current_time( 'timestamp', 1 ) returns GMT: " . date( 'Y-m-d H:i:s', curre
         </div>    
     </div><!-- #primary -->
     <div class="jeda"></div>
-
     <div class="row">
+    <?php if( is_user_logged_in()): ?>
+        <div style="background:#dcdcdc" class="col-md-12">
+            <center>anda sudah memesan <font color="red"><b><i id="jumlah-pesan-area"><?php echo get_jumlah_pesanan(); ?> item</i></b></font> di keranjang, <a href="<?php echo get_home_url().'/chart/'; ?>">lihat pesanan anda</a></center> 
+        </div>
+    <?php endif; ?>
      <!-- <h2>Nama Restaurant</h2>  -->
         <div class="col-lg-12 col-sm-12">
           <div class="container" ng-app="tabApp">
@@ -110,17 +114,18 @@ echo "current_time( 'timestamp', 1 ) returns GMT: " . date( 'Y-m-d H:i:s', curre
         </div>    
     </div><!-- #primary -->
     <script type="text/javascript">
-      jQuery(document).ready(function($){
-        
-        var first_selected_kategori_id = $("ul li.active").attr('id');
-        //alert(first_selected_kategori_id);
-        if( first_selected_kategori_id != undefined ){
-          var id_kategori = (first_selected_kategori_id).split("_").pop();
+        jQuery(document).ready(function($){
+          
+            var first_selected_kategori_id = $("ul li.active").attr('id');
+            //alert(first_selected_kategori_id);
+            if( first_selected_kategori_id != undefined ){
+                var id_kategori = (first_selected_kategori_id).split("_").pop();
 
-          window.doLoadMenuByKategori(id_kategori);
-        }else{
-          $("div.jdl_menu").html("Belum ada menu");        }
+                window.doLoadMenuByKategori(id_kategori);
+            }else{
+                $("div.jdl_menu").html("Belum ada menu");        
+            }
 
-      });
+        });
     </script>
 <?php get_footer(); ?>

@@ -16,15 +16,22 @@
             <td>
                 <img width="200px"src="<?php echo $invoice->gambar_dist; ?>">
             </td>
+
             <!-- DAFTAR PESANAN -->
             <td>
         <?php $total_nilai_menu = 0; ?>
-        <?php foreach( $attributes['menu'][$invoice->nama_dist] as $menu): ?>
-                <br><a href="#deskripsi_barang"><?php echo $menu->nama_menudel; ?> <br></a>
-                <input id="jumlah-pesan_<?php echo $menu->id_menudel; ?>" class="countx input-jumlah-pesan" type="number" min="1" max="999" value="<?php echo $menu->jumlah_pesanan; ?>" style="font-size:12pt;height:30px"/>
-                <a href="#hapus-dalam-list">&nbsp<img width="20" src="http://findicons.com/files/icons/99/office/128/delete.png"></a>
+                <ul id="menu-invoice_<?php echo $invoice->id_invoice; ?>">
+            <?php foreach( $attributes['menu'][$invoice->nama_dist] as $menu): ?>
+                    <li id="menu-pesanan-list_<?php echo $menu->id_pesanan; ?>">
+                        <br><a href="#deskripsi_barang"><?php echo $menu->nama_menudel; ?> <br></a>
+                        <input id="jumlah-pesan_<?php echo $menu->id_pesanan; ?>" class="countx input-jumlah-pesan" type="number" min="1" max="999" value="<?php echo $menu->jumlah_pesanan; ?>" style="font-size:12pt;height:30px"/>
+                        <a href="#hapus-dalam-list" class="hapus-menu-button" id="hapus-menu-button-id_<?php echo $menu->id_pesanan; ?>">
+                          &nbsp<img width="20" src="http://findicons.com/files/icons/99/office/128/delete.png">
+                        </a>
+                    </li>
               <?php $total_nilai_menu += ($menu->nilai_pesanan); ?>
-        <?php endforeach; ?>
+           <?php endforeach; ?>
+                </ul>
             </td>
             <!-- ALAMAT PENGIRIMAN -->
             <td>
@@ -44,7 +51,7 @@
             </td>
             <!-- NILAI PEMBAYARAN -->
             <td><br>
-                Subtotal :  <b>Rp.<?php echo $total_nilai_menu; ?></b><br>
+                Subtotal :  <b><span id="subtotal-area-id_<?php echo $invoice->id_invoice; ?>" class="subtotal-area">Rp.<?php echo $total_nilai_menu; ?></span></b><br>
                 Biaya Pengiriman :  
                 <b>
                     <span id="ongkir-area-id_<?php echo $invoice->id_invoice; ?>" class="ongkir-area"><?php if( $invoice->biaya_kirim_invoice > 0) echo $invoice->biaya_kirim_invoice; else echo 'alamat belum diisi.' ?></span>
@@ -54,7 +61,7 @@
                 <b>
                     Total (Termasuk PPN):
                     <font color="red">
-                        <h2 id="total-area-id_<?php echo $invoice->id_invoice; ?>" class="total-area"><?php if( $invoice->biaya_kirim_invoice > 0) echo 'Rp.'.(($total_nilai_menu * 0.05)+$total_nilai_menu+$invoice->biaya_kirim_invoice); else echo 'alamat belum diisi.' ?></h2>
+                        <h2><span id="total-area-id_<?php echo $invoice->id_invoice; ?>" class="total-area"><?php if( $invoice->biaya_kirim_invoice > 0) echo 'Rp.'.(($total_nilai_menu * 0.05)+$total_nilai_menu+$invoice->biaya_kirim_invoice); else echo 'alamat belum diisi.' ?></span></h2>
                     </font>
                 </b> 
                 <p></p>
@@ -109,18 +116,21 @@ function myFunction() {
 }
 
 jQuery(document).ready(function($){
-  <?php if( sizeof( $attributes['alamat']) > 0): ?>
-  //window.doHitungOngkir();
-  <?php endif; ?>
+
+  $("a.hapus-menu-button").click( function(){
+    var menu_pesanan = (this.id).split('_').pop();
+    
+    window.doDeletePesanan(menu_pesanan);
+  });
 
   $("a.ubah-alamat-link").click(function(){
     window.doLoadDataPengiriman();
   });
 
   $(".input-jumlah-pesan").on('change keyup', function(){
-    var menu = (this.id).split('_').pop();
+    var menu_pesanan = (this.id).split('_').pop();
     var jumlah = this.value;
-    //alert(this.value);
+    window.doUpdateJumlahPesanan( menu_pesanan, jumlah);
   });
 
   $("form.modal-data-pengiriman-form").on('submit',function(){
@@ -134,6 +144,8 @@ jQuery(document).ready(function($){
     data['detail_alamat'] = $("input#modal-detail-alamat-customer").val();
 
     window.doUpdateDataCustomer( id_data, data);
+    //window.doHitungOngkir();
+    //window.doHitungTotalPembayaran();
   });
   
 });

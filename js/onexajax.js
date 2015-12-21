@@ -8,6 +8,42 @@ jQuery(document).ready(function($){
 
 	});
 
+	window.doDeletePesanan = function DeletePesanan(menu_pesanan){
+		$.post(OnexAjax.ajaxurl,{ pesanan_menu : menu_pesanan, action: "AjaxDeletePesananMenu" })
+		.done( function (response) {
+			var result = jQuery.parseJSON( response);
+			if( result.status == true){
+				var parent_id = $("li#menu-pesanan-list_" + menu_pesanan).parent().attr("id");
+				$("li#menu-pesanan-list_" + menu_pesanan).remove();
+				var invoice = parent_id.split('_').pop();
+				doHitungTotalMenu(invoice);
+			}
+		});
+	}
+
+	window.doUpdateJumlahPesanan = function UpdateJumlahPesanan(menu_pesanan, jumlah){
+		$.post( OnexAjax.ajaxurl, { pesanan_menu : menu_pesanan, jumlah_pesanan : jumlah, action: "AjaxUpdateJumlahPesanan" })
+		.done( function (response) {
+			var result = jQuery.parseJSON( response);
+
+			if( result.status == true){
+				var parent_id = $("li#menu-pesanan-list_" + menu_pesanan).parent().attr("id");
+				//$("li#menu-pesanan-list_" + menu_pesanan).remove();
+				var invoice = parent_id.split('_').pop();
+				doHitungTotalMenu(invoice);
+			}
+		});
+	}
+
+	window.doHitungTotalMenu = function HitungTotalMenu(invoice_id){
+
+		$.get(OnexAjax.ajaxurl, { action: "AjaxGetTotalMenu", invoice: invoice_id })
+		.done(function(response){
+			$("span#subtotal-area-id_"+invoice_id).html("Rp." + response);
+			doHitungTotalPembayaran(false, invoice_id);
+		});
+	}
+
 	window.doUpdateDataCustomer = function UpdateDataCustomer(id_data, custdata){
 		//alert(customer + " : " + custdata['nama']);
 		$.post(OnexAjax.ajaxurl,
@@ -29,7 +65,7 @@ jQuery(document).ready(function($){
 				        $("p.kontak-area").html(custdata['nama'] + ", " + custdata['telp']);
 				        $("span.ongkir-area").html("proses perhitungan");
 				        $("span.jarak-area").html("");
-				        $("h2.total-area").html("proses perhitungan");
+				        $("span.total-area").html("proses perhitungan");
 						doHitungOngkir();
 				    }
 					$("#myModal").modal("hide");
@@ -41,35 +77,67 @@ jQuery(document).ready(function($){
 
 	window.doHitungOngkir = function HitungOngkir(){
 		var invoiceArr = [];
-		  $("span.ongkir-area").each(function(i){
-		    var full_id = $(this).attr("id");
-		    var id = full_id.split("_").pop();
-		    invoiceArr.push(id);
-		  });
+		$("span.ongkir-area").each(function(i){
+			var full_id = $(this).attr("id");
+			var id = full_id.split("_").pop();
+			invoiceArr.push(id);
+		});
 
-		  if(invoiceArr.length > 0){
-		    $.getJSON(OnexAjax.ajaxurl, { action: "AjaxGetOngkir", invoice: invoiceArr })
-		    .done(function(response){
-		      //alert(response[0]['jarak']);
-		      for(var i=0; i<invoiceArr.length; i++){
-		        var invoice = invoiceArr[i];
-		        var jarak = response[invoice]['jarak'];
-		        var ongkir = response[invoice]['ongkir'];
-		        $("span#ongkir-area-id_"+invoice).html("Rp." + ongkir);
-		        $("span#jarak-area-id_"+invoice).html("(" + jarak +" KM)");
-		        //alert(total_nilai_ppn + "-" + ongkir + "-" + jarak);
-		        //$("h2#total-area-id_"+invoice).html("Rp." + (total_nilai_ppn + ongkir ));
-		        doHitungTotalPembayaran(invoice, ongkir);
-		      }
-		    });
-		  }
+		if(invoiceArr.length > 0){
+			$.getJSON(OnexAjax.ajaxurl, { action: "AjaxGetOngkir", invoice: invoiceArr })
+			.done(function(response){
+				//alert(response[0]['jarak']);
+				for(var i=0; i<invoiceArr.length; i++){
+					var invoice = invoiceArr[i];
+					var jarak = response[invoice]['jarak'];
+					var ongkir = response[invoice]['ongkir'];
+					$("span#ongkir-area-id_"+invoice).html("Rp." + ongkir);
+					$("span#jarak-area-id_"+invoice).html("(" + jarak +" KM)");
+					//alert(total_nilai_ppn + "-" + ongkir + "-" + jarak);
+					//$("h2#total-area-id_"+invoice).html("Rp." + (total_nilai_ppn + ongkir ));
+					//doHitungTotalPembayaran(invoice, ongkir);
+					//var total_menu_ppn = doHitungTotalMenuPPn(invoice);
+					//var total_pembayaran = total_menu_ppn + ongkir;
+					//alert(total_menu_ppn);
+				}
+				doHitungTotalPembayaran(true, 0);
+			});
+		}
 	}
 
-	window.doHitungTotalPembayaran = function HitungTotalPembayaran(invoice_id, ongkir){
-		$.get(OnexAjax.ajaxurl, { invoice: invoice_id, action: "AjaxGetTotalMenuPPn" }, function(response){
+	window.doHitungTotalPembayaran = function HitungTotalPembayaran(all_invoice, invoice_id){
+
+		var invoiceArr = [];
+		if(all_invoice) {
+			$("span.total-area").each(function(i){
+				var full_id = $(this).attr("id");
+				var id = full_id.split("_").pop();
+				invoiceArr.push(id);
+			});
+		}else{
+			invoiceArr.push(invoice_id);
+		}
+
+		if(invoiceArr.length > 0){
+			$.getJSON(OnexAjax.ajaxurl, { action: "AjaxGetTotalPembayaran", invoice: invoiceArr })
+			.done(function(response){
+				//alert(response[0]['jarak']);
+				for(var i=0; i < invoiceArr.length; i++){
+					var invoice = invoiceArr[i];
+
+					var total_bayar = response[invoice].total_pembayaran;
+					//alert(total_bayar);
+					$("span#total-area-id_"+invoice).html("Rp." + total_bayar );
+				}
+			});
+		}
+
+		/*$.get(OnexAjax.ajaxurl, { invoice: invoice_id, action: "AjaxGetTotalMenuPPn" }, function(response){
 		    var total_nilai_ppn = Number(response);
 			$("h2#total-area-id_"+invoice_id).html("Rp." + (total_nilai_ppn + ongkir ));
-		});
+		});*/
+		
+
 	}
 
 	window.doLoadDataPengiriman = function LoadDataPengiriman(){
