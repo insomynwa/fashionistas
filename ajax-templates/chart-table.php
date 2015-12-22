@@ -1,7 +1,7 @@
 <table class="table">
     <thead class="thead-inverse">
         <tr>
-            <th width="5%">No</th> <?php $nomor = 1; ?>
+            <!-- <th width="5%">No</th> <?php //$nomor = 1; ?> -->
             <th width="25%">Distributor</th>
             <th width="25%">List order</th>
             <th width="25%">alamat pengiriman</th>
@@ -11,10 +11,10 @@
     <tbody>
 <?php if(sizeof($attributes['invoice']) > 0): ?>
     <?php foreach( $attributes['invoice'] as $invoice ): ?>
-        <tr>
-            <th scope="row"><?php echo $nomor; ?></th>
+        <tr id="row-invoice_<?php echo $invoice->id_invoice; ?>">
+            <!-- <th scope="row"><?php //echo $nomor; ?></th> -->
             <td>
-                <img width="200px"src="<?php echo $invoice->gambar_dist; ?>">
+                <a href="<?php echo home_url().'/menu-list/?distributor='.$invoice->id_dist; ?>"><img width="200px"src="<?php echo $invoice->gambar_dist; ?>?<?php echo millitime(); ?>"></a>
             </td>
 
             <!-- DAFTAR PESANAN -->
@@ -23,7 +23,7 @@
                 <ul id="menu-invoice_<?php echo $invoice->id_invoice; ?>">
             <?php foreach( $attributes['menu'][$invoice->nama_dist] as $menu): ?>
                     <li id="menu-pesanan-list_<?php echo $menu->id_pesanan; ?>">
-                        <br><a href="#deskripsi_barang"><?php echo $menu->nama_menudel; ?> <br></a>
+                        <br><a href="<?php echo home_url().'/detail-menu?menu='. $menu->id_menudel; ?>"><?php echo $menu->nama_menudel; ?> <br></a>
                         <input id="jumlah-pesan_<?php echo $menu->id_pesanan; ?>" class="countx input-jumlah-pesan" type="number" min="1" max="999" value="<?php echo $menu->jumlah_pesanan; ?>" style="font-size:12pt;height:30px"/>
                         <a href="#hapus-dalam-list" class="hapus-menu-button" id="hapus-menu-button-id_<?php echo $menu->id_pesanan; ?>">
                           &nbsp<img width="20" src="http://findicons.com/files/icons/99/office/128/delete.png">
@@ -69,10 +69,11 @@
                 <p>
                     pilih jadwal pengiriman: 
                     <div class="radio">
-                      <label><input type="radio" name="optradio_<?php echo $invoice->id_invoice; ?>">Sekarang</label>
+                      <label><input type="radio" name="optradio_<?php echo $invoice->id_invoice; ?>" checked>Sekarang</label>
                     </div>
                     <div class="radio">
-                      <label><input type="radio" name="optradio_<?php echo $invoice->id_invoice; ?>"><input type="time" id="myTime" value="18:15:00"></label>
+                      <label><input type="radio" id="radio-jam-kirim_<?php echo $invoice->id_invoice; ?>" name="optradio_<?php echo $invoice->id_invoice; ?>"><input class="form-control jam-kirim" type="text" id="jam-kirim-pesanan_<?php echo $invoice->id_invoice; ?>"></label>
+                      <!-- <label><input type="radio" name="optradio_<?php //echo $invoice->id_invoice; ?>"><input type="time" id="myTime" value="18:15:00"></label> -->
                       <!-- bisa ga mbah ngikutin jam sekarang -->
                     </div>
                     <a href="#masuk-ke-menu-bayar-cod"><button class="btn-menu"> COD </button> </a>
@@ -116,6 +117,16 @@ function myFunction() {
 }
 
 jQuery(document).ready(function($){
+
+  $("input.jam-kirim").wickedpicker({
+    now: new Date(),
+    twentyFour:false
+  });
+
+  $("input.jam-kirim").focus( function() {
+    var invoice = (this.id).split('_').pop();
+    $("input#radio-jam-kirim_"+invoice).attr('checked','checked');
+  });
 
   $("a.hapus-menu-button").click( function(){
     var menu_pesanan = (this.id).split('_').pop();

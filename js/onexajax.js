@@ -8,15 +8,44 @@ jQuery(document).ready(function($){
 
 	});
 
+	window.doPesanMenu = function PesanMenu(id, distributor, doUpdateItem){
+		
+	    var id_menudel = id;
+
+	    // save to invoice
+	    var data = {
+	      'action'   : 'AjaxCustomerPesanMenu',
+	      'distributor' : distributor,
+	      'menu' : id_menudel,
+	      'security' : OnexAjax.security
+	    }
+
+	    $.post(OnexAjax.ajaxurl, data, function(response) {
+	        var result = jQuery.parseJSON(response);
+	        if( result.status != true){
+	            alert(result.message);
+	        }else{
+	        	if(doUpdateItem){
+	            	$("i#jumlah-pesan-area").html(result.total_jumlah_jenis_pesanan + " item");
+	            }
+	        }
+		});
+		
+	}
+
 	window.doDeletePesanan = function DeletePesanan(menu_pesanan){
 		$.post(OnexAjax.ajaxurl,{ pesanan_menu : menu_pesanan, action: "AjaxDeletePesananMenu" })
 		.done( function (response) {
 			var result = jQuery.parseJSON( response);
 			if( result.status == true){
 				var parent_id = $("li#menu-pesanan-list_" + menu_pesanan).parent().attr("id");
-				$("li#menu-pesanan-list_" + menu_pesanan).remove();
 				var invoice = parent_id.split('_').pop();
-				doHitungTotalMenu(invoice);
+				if( result.code == 1){
+					$("li#menu-pesanan-list_" + menu_pesanan).remove();
+					doHitungTotalMenu(invoice);
+				}else if (result.code == 2){
+					$("tr#row-invoice_" + invoice).remove();
+				}
 			}
 		});
 	}

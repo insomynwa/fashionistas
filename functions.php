@@ -270,11 +270,26 @@ function AjaxPost_Delete_PesananMenu(){
 			$pemesanan = new Onex_Pemesanan_Menu();
 			$pemesanan->SetPesananMenu_Id( $_POST['pesanan_menu'] );
 			$pemesanan_id = $pemesanan->GetId();
+			$pemesanan_invoice = $pemesanan->GetInvoice();
 
 			if( $pemesanan_id > 0){
 				if( $pemesanan->DeletePesananMenu()){
-					$result['status'] = true;
-					$result['message'] = "Berhasil menghapus pesanan";
+					
+					if(! $pemesanan->HasAnyMenu_Invoice( $pemesanan_invoice) ){
+						$invoice = new Onex_Invoice();
+						$invoice->SetAnInvoice_Id( $pemesanan_invoice );
+						if( $invoice->DeleteInvoice() ){
+							$result['status'] = true;
+							$result['code'] = 2;
+							$result['message'] = 'berhasil menghapus pesanan';
+						}else{
+							$result['message'] = 'gagal menghapus invoice';
+						}
+					}else{
+						$result['code'] = 1;
+						$result['status'] = true;
+						$result['message'] = "Berhasil menghapus pesanan";
+					}
 				}else{
 					$result['message'] = "Gagal menghapus pesanan";
 				}
@@ -684,6 +699,25 @@ function get_distributor_by_id(){
 	$onex_kategori_menu_obj = new Onex_Kategori_Menu();
 	$content['distributor'] = $onex_distributor_obj->GetDistributor( $_GET['distributor']);
 	$content['katmenu'] = $onex_kategori_menu_obj->GetKategoriByDistributor( $_GET['distributor'] );
+
+	return $content;
+}
+
+function get_detail_menu(){
+	$get_menudel_id = sanitize_text_field( $_GET['menu']);
+	$menudel = new Onex_Menu_Distributor();
+	$katdel = new Onex_Jenis_Delivery();
+	$distributor = new Onex_Distributor();
+	$katmenu = new Onex_Kategori_Menu();
+
+	$menudel->SetAMenuDistributor( $get_menudel_id );
+	$distributor->SetADistributor( $menudel->GetDistributor());
+	$katdel->SetAJenisDelivery( $distributor->GetKatdel());
+	$katmenu->SetAKategoriMenu( $menudel->GetKatmenu());
+	$content['menudel'] = $menudel;
+	$content['distributor'] = $distributor;
+	$content['katdel'] = $katdel;
+	$content['katmenu'] = $katmenu;
 
 	return $content;
 }

@@ -21,7 +21,7 @@ get_header(); ?>
                 <div align="right"><a href data-toggle="modal" data-target="#change_account">Ubah</a></div>
                 <p></p>
             </div>
-            <div class="thumbnail">
+            <!-- <div class="thumbnail">
                 <b>Tambah Alamat</b>
                 <div class="spasi"></div>
                 <div class="form-group">
@@ -42,7 +42,7 @@ get_header(); ?>
                 </div>
                 <div align="right"><button type="submit" class="btn btn-default">Tambah</button></div>
                 <p></p>
-            </div>
+            </div> -->
           </div>   
           <div class="thumbnail col-lg-7 col-sm-7">
             <p></p>

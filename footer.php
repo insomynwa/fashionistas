@@ -28,6 +28,11 @@
 			</div><!-- .site-credit -->
 		</div>
 	<!-- #colophon --></footer>
+	<script src="<?php echo bloginfo("template_url"); ?>/js/wickedpicker.js"></script>
+	<!--<script type="text/javascript" src="<?php //echo bloginfo("template_url"); ?>/js/moment.js">
+	</script>
+	<script type="text/javascript" src="<?php //echo bloginfo("template_url"); ?>/css/bootstrap/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="<?php //echo bloginfo("template_url"); ?>/js/bootstrap-datetimepicker.min.js"></script>-->
 
 <?php wp_footer(); ?>
 

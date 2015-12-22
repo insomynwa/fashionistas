@@ -15,7 +15,7 @@
             <?php else: ?>
             <a class="menu-pesan-sekarang" href="<?php echo wp_login_url(); ?>"><button class="btn-menu"> Pesan Sekarang</button> </a>
             <?php endif; ?>
-            <p></p><a href="ke-menu-deskripsi-produk"><button class="btn-menu-detail"> Detail</button> </a></p>
+            <p></p><a href="<?php echo home_url().'/detail-menu?menu='. $menu->id_menudel; ?>"><button class="btn-menu-detail"> Detail</button> </a></p>
         </div>
     </div>
 </div>
@@ -44,9 +44,9 @@ jQuery(document).ready( function($) {
     
     <?php if( is_user_logged_in()): ?>
     var id_menudel = (this.id).split('_').pop();
-
+    window.doPesanMenu(id_menudel, <?php echo $distributor; ?>, true);
     // save to invoice
-    var data = {
+    /*var data = {
       'action'   : 'AjaxCustomerPesanMenu',
       'distributor' : <?php echo $distributor; ?>,
       'menu' : id_menudel,
@@ -60,9 +60,9 @@ jQuery(document).ready( function($) {
         }else{
             $("i#jumlah-pesan-area").html(result.total_jumlah_jenis_pesanan + " item");
         }
-    });
+    });*/
     //alert(id_menudel + " <?php echo is_user_logged_in(); ?>");
-    <?php else: ?>
+    <?php //else: ?>
 
     <?php endif; ?>
 

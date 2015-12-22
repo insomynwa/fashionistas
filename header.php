@@ -19,9 +19,11 @@
 	<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
 	<link rel = "stylesheet" href = "http://getbootstrap.com/dist/css/bootstrap.min.css" type = "text/css" media = "screen" />
 	<link rel = "stylesheet" href = "<?php echo bloginfo('template_url'); ?>/css/bootstrap/css/bootstrap.min.css" type = "text/css" media = "screen" />
+	<link rel="stylesheet" href="<?php echo bloginfo('template_url'); ?>/css/wickedpicker.css">
 	<link rel="pingback" href="<?php bloginfo( 'pingback_url' ); ?>">
 <?php if ( get_theme_mod('site_favicon') ) : ?>
 	<link rel="shortcut icon" href="<?php echo esc_url(get_theme_mod('site_favicon')); ?>" />
+	<!-- <link rel="stylesheet" href="<?php //echo bloginfo('template_url'); ?>/css/bootstrap-datetimepicker.min.css" /> -->
 <?php endif; ?>
 
 <?php if ( get_theme_mod('apple_touch_144') ) : ?>
