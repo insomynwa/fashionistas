@@ -73,7 +73,7 @@ jQuery(document).ready(function($){
 		});
 	}
 
-	window.doUpdateDataCustomer = function UpdateDataCustomer(id_data, custdata){
+	window.doUpdateDataCustomer = function UpdateDataCustomer(id_data, custdata, showTarifJarak){
 		//alert(customer + " : " + custdata['nama']);
 		$.post(OnexAjax.ajaxurl,
 			{
@@ -90,14 +90,19 @@ jQuery(document).ready(function($){
 				//alert(result.status);
 				if(result.status == true){
 					if(result.code == 1){
-				        $("span.detail-alamat-area").html(custdata['detail_alamat']);
-				        $("p.kontak-area").html(custdata['nama'] + ", " + custdata['telp']);
-				        $("span.ongkir-area").html("proses perhitungan");
-				        $("span.jarak-area").html("");
-				        $("span.total-area").html("proses perhitungan");
+				        $(".data-user-alamat-detail").html(custdata['detail_alamat']);
+				        //$("p.kontak-area").html(custdata['nama'] + ", " + custdata['telp']);
+				        $(".data-user-telp").html(custdata['telp']);
+				        $(".data-user-nama").html(custdata['nama']);
+
+				        if(showTarifJarak){
+					        $("span.ongkir-area").html("proses perhitungan");
+					        $("span.jarak-area").html("");
+					        $("span.total-area").html("proses perhitungan");
+						}
 						doHitungOngkir();
 				    }
-					$("#myModal").modal("hide");
+					$("#modal-update-data-user").modal("hide");
 				}else{
 					//$("#myModal").modal("hide");
 				}
@@ -105,19 +110,21 @@ jQuery(document).ready(function($){
 	}
 
 	window.doHitungOngkir = function HitungOngkir(){
-		var invoiceArr = [];
+		/*var invoiceArr = [];
 		$("span.ongkir-area").each(function(i){
 			var full_id = $(this).attr("id");
 			var id = full_id.split("_").pop();
 			invoiceArr.push(id);
-		});
+		});*/
 
-		if(invoiceArr.length > 0){
-			$.getJSON(OnexAjax.ajaxurl, { action: "AjaxGetOngkir", invoice: invoiceArr })
+		//if(invoiceArr.length > 0){
+			$.getJSON(OnexAjax.ajaxurl, { action: "AjaxGetOngkir"/*, invoice: invoiceArr*/ })
 			.done(function(response){
+				//alert(response['invoice']);
+				for( var i=0; i<(response['invoice']).length; i++){
 				//alert(response[0]['jarak']);
-				for(var i=0; i<invoiceArr.length; i++){
-					var invoice = invoiceArr[i];
+				//for(var i=0; i<invoiceArr.length; i++){
+					var invoice = response['invoice'][i];//alert(response['invoice'][i]);
 					var jarak = response[invoice]['jarak'];
 					var ongkir = response[invoice]['ongkir'];
 					$("span#ongkir-area-id_"+invoice).html("Rp." + ongkir);
@@ -128,10 +135,11 @@ jQuery(document).ready(function($){
 					//var total_menu_ppn = doHitungTotalMenuPPn(invoice);
 					//var total_pembayaran = total_menu_ppn + ongkir;
 					//alert(total_menu_ppn);
+				//}
 				}
 				doHitungTotalPembayaran(true, 0);
 			});
-		}
+		//}
 	}
 
 	window.doHitungTotalPembayaran = function HitungTotalPembayaran(all_invoice, invoice_id){
@@ -169,7 +177,7 @@ jQuery(document).ready(function($){
 
 	}
 
-	window.doLoadDataPengiriman = function LoadDataPengiriman(){
+	/*window.doLoadDataPengiriman = function LoadDataPengiriman(){
 		
 		$.getJSON(OnexAjax.ajaxurl, { action: "AjaxGetDataCustomer" })
 		.done(function( response){
@@ -181,7 +189,7 @@ jQuery(document).ready(function($){
 			}
 			$("input#modal-id-data-customer").val( response['id']);
 		});
-	}
+	}*/
 
 	window.doLoadMenuByKategori = function LoadMenuByKategori(id_kategori){
 		//$("div#menu-list-area-active").attr("ng-show","isSet("+id_kategori+")");
