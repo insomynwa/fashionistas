@@ -20,52 +20,35 @@
     </div>
 </div>
   <?php endforeach; ?>
-<center>
-  <!-- paging -->
+<!-- <center>
   <div id="container">
-    <div class="paginate wrapper">
+    <div id="menu-pagination" class="paginate wrapper ">
         <ul>
-            <li><a href="">&lang;</a></li>
-            <li><a href="" class="active">1</a></li>
-            <li><a href="" class="inactive">2</a></li>
-            <li><a href="">3</a></li>
-            <li><a href="">4</a></li>
-            <li><a href="">5</a></li>
+        <?php //if( $attributes['jumlah_page'] > 0): ?>
+            <?php //for($i = 0; $i < $attributes['jumlah_page']; $i++): ?>
+            <li><a class="page-link" id="page_<?php //echo ($i+1); ?>"><?php //echo ($i+1); ?></a></li>
+            <?php //endfor; ?>
+        <?php //elseif( $attributes['jumlah_page']): ?>
+            <li><a class="page-link active" id="page_<?php //echo ($i+1); ?>" >1</a></li>
+        <?php //endif; ?>
         </ul>
     </div>
   </div>
-</center>
+</center> -->
 <?php else: ?>
   Belum ada menu yang tersedia.
 <?php endif; ?>
 <script type="text/javascript">
 jQuery(document).ready( function($) {
-  $("a.menu-pesan-sekarang").click( function() {
-    
-    <?php if( is_user_logged_in()): ?>
-    var id_menudel = (this.id).split('_').pop();
-    window.doPesanMenu(id_menudel, <?php echo $distributor; ?>, true);
-    // save to invoice
-    /*var data = {
-      'action'   : 'AjaxCustomerPesanMenu',
-      'distributor' : <?php echo $distributor; ?>,
-      'menu' : id_menudel,
-      'security' : OnexAjax.security
-    }
+    $("a.menu-pesan-sekarang").click( function() {
+      
+        <?php if( is_user_logged_in()): ?>
+        var id_menudel = (this.id).split('_').pop();
+        window.doPesanMenu(id_menudel, <?php echo $distributor; ?>, true);
 
-    $.post(OnexAjax.ajaxurl, data, function(response) {
-        var result = jQuery.parseJSON(response);
-        if( result.status != true){
-            alert(result.message);
-        }else{
-            $("i#jumlah-pesan-area").html(result.total_jumlah_jenis_pesanan + " item");
-        }
-    });*/
-    //alert(id_menudel + " <?php echo is_user_logged_in(); ?>");
-    <?php //else: ?>
+        <?php endif; ?>
 
-    <?php endif; ?>
+    });
 
-  });
 });
 </script>

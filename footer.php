@@ -24,10 +24,11 @@
 			</div><!-- .site-info -->
 
 			<div class="site-credit">
-				<a href="http://athemes.com/theme/fashionista">Fashionista</a> by aThemes
+				<!-- <a href="http://athemes.com/theme/fashionista">Fashionista</a> by aThemes -->
 			</div><!-- .site-credit -->
 		</div>
 	<!-- #colophon --></footer>
+	
 	<script src="<?php echo bloginfo("template_url"); ?>/js/wickedpicker.js"></script>
 	<!--<script type="text/javascript" src="<?php //echo bloginfo("template_url"); ?>/js/moment.js">
 	</script>

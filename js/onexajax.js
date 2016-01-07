@@ -4,8 +4,8 @@ jQuery(document).ready(function($){
 
 		var id_kategori = (this.id).split("_").pop();
 
-		doLoadMenuByKategori(id_kategori);
-
+		//doLoadMenuByKategori(id_kategori,1);
+		doLoadMenuPagination(id_kategori);
 	});
 
 	window.doPesanMenu = function PesanMenu(id, distributor, doUpdateItem){
@@ -110,32 +110,16 @@ jQuery(document).ready(function($){
 	}
 
 	window.doHitungOngkir = function HitungOngkir(){
-		/*var invoiceArr = [];
-		$("span.ongkir-area").each(function(i){
-			var full_id = $(this).attr("id");
-			var id = full_id.split("_").pop();
-			invoiceArr.push(id);
-		});*/
-
-		//if(invoiceArr.length > 0){
 			$.getJSON(OnexAjax.ajaxurl, { action: "AjaxGetOngkir"/*, invoice: invoiceArr*/ })
 			.done(function(response){
 				//alert(response['invoice']);
 				for( var i=0; i<(response['invoice']).length; i++){
-				//alert(response[0]['jarak']);
-				//for(var i=0; i<invoiceArr.length; i++){
 					var invoice = response['invoice'][i];//alert(response['invoice'][i]);
 					var jarak = response[invoice]['jarak'];
 					var ongkir = response[invoice]['ongkir'];
 					$("span#ongkir-area-id_"+invoice).html("Rp." + ongkir);
 					$("span#jarak-area-id_"+invoice).html("(" + jarak +" KM)");
-					//alert(total_nilai_ppn + "-" + ongkir + "-" + jarak);
-					//$("h2#total-area-id_"+invoice).html("Rp." + (total_nilai_ppn + ongkir ));
-					//doHitungTotalPembayaran(invoice, ongkir);
-					//var total_menu_ppn = doHitungTotalMenuPPn(invoice);
-					//var total_pembayaran = total_menu_ppn + ongkir;
-					//alert(total_menu_ppn);
-				//}
+					
 				}
 				doHitungTotalPembayaran(true, 0);
 			});
@@ -191,12 +175,25 @@ jQuery(document).ready(function($){
 		});
 	}*/
 
-	window.doLoadMenuByKategori = function LoadMenuByKategori(id_kategori){
+	window.doLoadMenuPagination = function LoadMenuPagination(id_kategori){
+		var data = {
+			'action' : 'AjaxGetMenuPaginationByKategori',
+			'kategori' : id_kategori,
+			'security' : OnexAjax.security
+		};
+
+		$.get( OnexAjax.ajaxurl, data, function( response) {
+			$("div#menu-pagination").html(response);
+		} );
+	}
+
+	window.doLoadMenuByKategori = function LoadMenuByKategori(id_kategori, page){
 		//$("div#menu-list-area-active").attr("ng-show","isSet("+id_kategori+")");
 
 		var data = {
 			'action': 'AjaxGetMenuByKategori',
 			'kategori' : id_kategori,
+			'page' : page,
 			'security' : OnexAjax.security
 		};
 

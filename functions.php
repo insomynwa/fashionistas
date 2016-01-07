@@ -209,13 +209,17 @@ function remove_admin_bar() {
 
 }
 
+// Remove WP version
+function no_generator() { return ''; }
+add_filter( 'the_generator', 'no_generator');
+
 add_action( 'template_redirect', 'my_page_template_redirect');
 function my_page_template_redirect(){
 	if( !is_user_logged_in()){
 		if(is_page('chart')){
 			wp_redirect( home_url() );
 			exit;
-		}else if( is_page('profil')){
+		}else if( is_page('profil') || is_page('pemesanan-berhasil')){
 			wp_redirect( wp_login_url());
 			exit;
 		}
@@ -250,17 +254,55 @@ add_action( 'wp_ajax_AjaxGetMenuByKategori', 'AjaxLoad_MenuByKategori');
 add_action( 'wp_ajax_nopriv_AjaxGetMenuByKategori', 'AjaxLoad_MenuByKategori');
 function AjaxLoad_MenuByKategori(){
 
+	if( isset($_GET['kategori']) && isset($_GET['page']) && $_GET['kategori']!="" && $_GET['page']!="" ){
+  		check_ajax_referer( 'onex-special-string', 'security' );
+		$onex_menu_distributor_obj = new Onex_Menu_Distributor();
+		$get_kategori_id = sanitize_text_field( $_GET['kategori'] );
+		$get_page = sanitize_text_field( $_GET['page']);
+
+		$limit = 3;
+
+		/*$jumlah_data = $onex_menu_distributor_obj->CountMenu_Kategori( $get_kategori_id);
+		$jumlah_page = intval($jumlah_data / $limit);
+		if( $jumlah_data % $limit > 0)
+			$jumlah_page += 1;*/
+		$offset = ( $get_page - 1) * $limit;
+
+		//$content['jumlah_page'] = $jumlah_page;
+		
+		$content['menudist'] = $onex_menu_distributor_obj->GetLimitMenu_Kategori( $get_kategori_id, $limit, $offset);
+
+		
+		echo getHtmlTemplate( get_template_directory(). '/ajax-templates/', 'menu-list', $content );
+	}
+	wp_die();
+}
+
+add_action( 'wp_ajax_AjaxGetMenuPaginationByKategori', 'AjaxLoad_MenuPaginationByKategori');
+add_action( 'wp_ajax_nopriv_AjaxGetMenuPaginationByKategori', 'AjaxLoad_MenuPaginationByKategori');
+function AjaxLoad_MenuPaginationByKategori(){
+
 	if( isset($_GET['kategori'])){
   		check_ajax_referer( 'onex-special-string', 'security' );
 		$onex_menu_distributor_obj = new Onex_Menu_Distributor();
-		//$onex_pemesanan_menu_obj = new Onex_Pemesanan_Menu();
-		$content['menudist'] = $onex_menu_distributor_obj->GetMenuByKategori( $_GET['kategori']);
-		/*if( is_user_logged_in() ){
-			$content['jumlah_pesanan'] = $onex_pemesanan_menu_obj->GetJumlahPemesananMenuByUser( get_current_user_id() );
-		}*/
-		//var_dump(get_current_user_id());
-		echo getHtmlTemplate( get_template_directory(). '/ajax-templates/', 'menu-list', $content );
-		//var_dump($content,json_encode($content));
+		$get_kategori_id = sanitize_text_field( $_GET['kategori'] );
+		//$get_page = sanitize_text_field( $_GET['page']);
+
+		$limit = 3;
+
+		$jumlah_data = $onex_menu_distributor_obj->CountMenu_Kategori( $get_kategori_id);
+		$jumlah_page = intval($jumlah_data / $limit);
+		if( $jumlah_data % $limit > 0)
+			$jumlah_page += 1;
+		//$offset = ( $get_page - 1) * $limit;
+
+		$content['kategori'] = $get_kategori_id;
+		$content['jumlah_page'] = $jumlah_page;
+		
+		//$content['menudist'] = $onex_menu_distributor_obj->GetLimitMenu_Kategori( $get_kategori_id, $limit, $offset);
+
+		
+		echo getHtmlTemplate( get_template_directory(). '/ajax-templates/', 'menu-list-pagination', $content );
 	}
 	wp_die();
 }
@@ -357,9 +399,9 @@ function AjaxPost_Customer_PesanMenu(){
 
 			if( $invoice_id == 0){
 				// Create New Invoice for user on this distributor
-				$invoice->SetNomor();
 				$invoice->SetUser( $customer_id );
 				$invoice->SetDistributor( $distributor_id);
+				$invoice->SetNomor();
 				
 				$invoice->CreateNewInvoice();
 				$invoice_id = $invoice->GetId();
@@ -414,6 +456,7 @@ function AjaxLoad_ChartUser(){
 			$invoice_id = $invoice_ids->id_invoice;
 			$invoice = new Onex_Invoice();
 			$distributor = new Onex_Distributor();
+			$banks = new Onex_Bank();
 			$invoice->SetAnInvoice_Id( $invoice_id);
 
 			if( $data_pembeli->GetId() == 0){
@@ -421,6 +464,15 @@ function AjaxLoad_ChartUser(){
 				$invoice->SetBiayaKirim(0);
 			}else{
 				$data['alamat'] = $data_pembeli;
+			}
+
+			$i = 0;
+			foreach($banks->GetAllBank() as $b){
+				$bank_id = $b->id_bank;
+				$bank = new Onex_Bank();
+				$bank->SetABank_Id( $bank_id);
+				$data['bank'][$i] = $bank;
+				$i+=1;
 			}
 
 			$distributor->SetADistributor( $invoice->GetDistributor());
@@ -447,37 +499,47 @@ function AjaxLoad_ChartUser(){
 			$no += 1;
 		}
 
-
-		//var_dump($data['pesanan']);
-
 		echo getHtmlTemplate( get_template_directory(). '/ajax-templates/', 'chart-table', $data );
+	}
+	wp_die();
+}
 
-		/*$invoice_obj = new Onex_Invoice();
-		$data_pembeli_obj = new Onex_Data_Pembeli();
-		//$ongkir_obj = new Onex_Ongkos_Kirim();
+add_action( 'wp_ajax_AjaxRetrieveInvoiceDetail', 'AjaxRetrieve_Invoice_Detail');
+function AjaxRetrieve_Invoice_Detail(){
+	if( is_user_logged_in()){
 
+		if( isset($_GET['invoice'] ) && $_GET['invoice'] != "" ) {
+			$get_invoice_id = sanitize_text_field( $_GET['invoice'] );
 
-		$content['invoice'] = $invoice_obj->GetInvoiceAktifByUser( $customer_id );
-		$content['alamat'] = $data_pembeli_obj->GetDataPembeliByUser( $customer_id );
+			$invoice = new Onex_Invoice();
+			$distributor = new Onex_Distributor();
+			$invoice->SetAnInvoice_Id( $get_invoice_id);
+			$distributor->SetADistributor( $invoice->GetDistributor() );
+			$data = array();
+			$data['invoice'] = $invoice;
+			$data['distributor'] = $distributor;
 
-		//$tarifPerKm = $ongkir_obj->GetTarifPerKm();
+			$list_pesanan = $invoice->GetPesanan();
+			$n = 0;
+			foreach( $list_pesanan as $p){
+				$pesanan_id = $p->id_pesanan;
+				$pesanan = new Onex_Pemesanan_Menu();
+				$pesanan->SetPesananMenu_Id( $pesanan_id);
+				$data['pesanan'][$n] = $pesanan;
+				$menudel = new Onex_Menu_Distributor();
+				$menudel->SetAMenuDistributor( $pesanan->GetMenudel() );
+				$data['menu'][$n] = $menudel;
+				$n += 1;
+			}
+			//var_dump($data['menu']);
+			$pemesanan = new Onex_Pemesanan_Menu();
+			$total_nilai_menu = $pemesanan->GetTotalNilaiPesanan( $get_invoice_id);
+			$total_nilai_menu_ppn = $total_nilai_menu + ( $total_nilai_menu * 0.05 );
+			$total_pembayaran = $total_nilai_menu_ppn + $invoice->GetBiayaKirim();
+			$data['total_pembayaran'] = $total_pembayaran;
 
-		//$to = "";
-		//$from = $content['alamat']['alamat_detail_datapembeli'];
-
-		$pemesanan_menu_obj = new Onex_Pemesanan_Menu();
-		foreach( $content['invoice'] as $invoice => $value){
-			$content['menu'][$value->nama_dist] = $pemesanan_menu_obj->GetPesananMenuByInvoice( $value->id_invoice);
-			//$to = $value->alamat_dist;
-			//$jarak = getJarakKm( $from, $to);
-			//$content['jarak'][$value->nama_dist] = $jarak;
-			//$content['ongkir'][$value->nama_dist] = $jarak * $tarifPerKm;
+			echo getHtmlTemplate( get_template_directory(). '/ajax-templates/', 'profil-invoice-detail', $data );
 		}
-		//var_dump($from, $to);
-		//var_dump( getJarakKm($from, $to) );
-		//getJarakKm($from, $to);
-
-		echo getHtmlTemplate( get_template_directory(). '/ajax-templates/', 'chart-table', $content );*/
 	}
 	wp_die();
 }
@@ -555,38 +617,6 @@ function AjaxLoad_Ongkir(){
 		}
 
 		echo wp_json_encode( $data);
-
-
-		/*if(isset( $_GET['invoice'] )){
-
-			$invoice_id = $_GET['invoice'];
-			$customer_id = get_current_user_id();
-
-			//$distributor_obj = new Onex_Distributor();
-			$data_pembeli_obj = new Onex_Data_Pembeli();
-			//$ongkir_obj = new Onex_Ongkos_Kirim();
-			$invoice_obj = new Onex_Invoice();
-
-			//$tarifDasar = $ongkir_obj->GetTarifPerKm();
-			$alamat_to = $data_pembeli_obj->GetAlamatCustomer( $customer_id);
-			
-			$data = array();
-			//var_dump($distributor_id);
-
-			for($i = 0; $i<sizeof($invoice_id); $i++){
-				//var_dump($distributor_id); wp_die();
-
-				$distributor = $invoice_obj->GetInvoiceDistributor( $invoice_id[$i] );
-
-				$jarak = getJarakKm( $distributor['alamat_dist'], $alamat_to);
-				$ongkir = getOngkir ( $jarak);
-				$data[$invoice_id[$i]]['jarak'] = $jarak;
-				$data[$invoice_id[$i]]['ongkir'] = $ongkir;
-				$invoice_obj->UpdateJarakDanBiayaKirim( $invoice_id[$i], $jarak, $ongkir );
-			}
-
-			echo wp_json_encode( $data);
-		}*/
 	}
 	wp_die();
 }
@@ -729,6 +759,48 @@ function AjaxUpdate_DataCustomer(){
 		}
 
 		echo wp_json_encode($result);
+	}
+	wp_die();
+}
+
+add_action( 'wp_ajax_AjaxPostTransferPembayaran', 'AjaxPost_Pembayaran_Transfer');
+function AjaxPost_Pembayaran_Transfer(){
+	if( is_user_logged_in()){
+		if( isset( $_POST['invoice']) && isset( $_POST['bank']) && isset( $_POST['jam_kirim']) && isset( $_POST['mode']) ) {
+			$post_invoice_id = sanitize_text_field( $_POST['invoice']);
+			$post_bank_id = sanitize_text_field( $_POST['bank']);
+			$post_jam_kirim = sanitize_text_field( $_POST['jam_kirim']);
+			$post_mode_bayar = sanitize_text_field( $_POST['mode']);
+
+			$invoice = new Onex_Invoice();
+			$invoice->SetAnInvoice_Id( $post_invoice_id);
+			if($post_mode_bayar>0) $invoice->SetBank( $post_bank_id);
+			$invoice->SetTipeBayar($post_mode_bayar); // 1 for transfer, 0 for COD
+			$invoice->SetStatusConfirm(1);
+
+			date_default_timezone_set('Asia/Jakarta');
+			if($post_jam_kirim > 0){
+				$h = substr( $post_jam_kirim, 0, 2);
+				$min = substr( $post_jam_kirim, -2);
+				$y = date('Y');
+				$bln = date('m');
+				$d = date('d');
+				$jam_kirim = "$y-$bln-$d $h:$min:00";//var_dump($jam_kirim);
+				//$dtime = DateTime::createFromFormat("Y-m-d H:i", $jam_kirim);
+				//$timestamp = $dtime->getTimestamp();
+				$dtime = date("Y-m-d H:i", strtotime($jam_kirim));
+			}else{
+				$dtime = date("Y-m-d H:i:s", time());
+			}
+			$invoice->SetJamKirim($dtime);
+			$invoice->SetTanggalUserConfirm();
+			$result = $invoice->KonfirmasiPembayaran();
+			$result['direct'] = 'pemesanan-berhasil';
+			//if($result['status']){
+				//wp_redirect(home_url().'/pemesanan-berhasil'); exit;
+			//}
+			echo wp_json_encode($result);
+		}
 	}
 	wp_die();
 }

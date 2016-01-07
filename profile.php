@@ -68,7 +68,7 @@ get_header(); ?>
                   <?php foreach($content['invoice'] as $invoice): ?>
                   <tr>
                     <td><?php echo ($nmr + 1); ?></td>
-                    <td><a href="#"><?php echo $content['distributor'][$nmr]->GetKode().''.get_current_user_id().''.$invoice->GetNomor(); ?></a></td>
+                    <td><a class="invoice-link" id="invoice_<?php echo $invoice->GetId(); ?>" data-toggle="modal" data-target="#modal-invoice"><?php echo $content['distributor'][$nmr]->GetKode().''.get_current_user_id().''.$invoice->GetNomor(); ?></a></td>
                     <td><?php if($invoice->GetStatusAdminConfirm() == 0 && $invoice->GetStatusConfirm() == 1): ?>
                         Waiting
                         <?php elseif($invoice->GetStatusAdminConfirm() == 0 && $invoice->GetStatusConfirm() == 0): ?>
@@ -83,16 +83,6 @@ get_header(); ?>
                   <?php $nmr += 1; ?>
                   <?php endforeach; ?>
                 <?php endif; ?>
-                  <!-- <tr>
-                    <td>2</td>
-                    <td><a href="#">SD109</a></td>
-                    <td>On progress</td>
-                  </tr>
-                  <tr>
-                    <td>3</td>
-                    <td><a href="#">PD123</a></td>
-                    <td>Delivered</td>
-                  </tr> -->
                 </tbody>
               </table>
           </div>   
@@ -153,11 +143,38 @@ get_header(); ?>
     </div>
 </div>
 
+<div class="modal fade" id="modal-invoice" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Pesanan</h4>
+            </div>
+            <div class="modal-body" id="modal-invoice-body">
+
+                <?php //if( sizeof( $attributes['bank'])): ?>
+                <!-- <form id="form-modal-pembayaran">
+                    <?php //for( $i=0; $i < sizeof($attributes['bank']); $i++): ?>
+                    <input type="radio" class="bank-radio" name="bank-radio" value="<?php //echo $attributes['bank'][$i]->GetId(); ?>" <?php //if($i==0) echo 'checked'; ?> /> <span><?php //echo $attributes['bank'][$i]->GetNama(); ?></span>, <span><?php //echo $attributes['bank'][$i]->GetNoRekening(); ?></span> a.n. <span><?php //echo $attributes['bank'][$i]->GetPemilik(); ?></span><br />
+                    <?php //endfor; ?>
+                    <input type="hidden" id="invoice-id" name="invoice-id" />
+                    <input type="submit" name="pembayaran-submit" value="Konfirmasi Transfer Pembayaran" />
+                </form> -->
+                <?php //endif; ?>
+                
+            </div>
+            <div class="modal-footer">
+                
+            </div>
+        </div>
+    </div>
+</div>
+
 <script type="text/javascript">
 jQuery(document).ready( function( $) {
-  $('#myModal').on('shown.bs.modal', function(){
-    $('#myInput').focus();
-  });
+    $('#myModal').on('shown.bs.modal', function(){
+        $('#myInput').focus();
+    });
 
     $("a#update-account-link").click( function () {
         alert("under construction")
@@ -173,6 +190,24 @@ jQuery(document).ready( function( $) {
         data['detail_alamat'] = $("textarea#modal-detail-alamat-customer").val();
 
         window.doUpdateDataCustomer( id_data, data, false);
+    });
+
+    $("#modal-invoice").on("hidden.bs.modal", function () {
+        $("div#modal-invoice-body").html("");
+    });
+
+    $("a.invoice-link").css("cursor", "pointer");
+
+    $("a.invoice-link").click( function() {
+        var inv = (this.id).split('_').pop();
+        var data = {
+            'action' : 'AjaxRetrieveInvoiceDetail',
+            'invoice': inv
+        };
+
+        $.get( OnexAjax.ajaxurl, data, function ( response) {
+            $("div#modal-invoice-body").html(response);
+        });
     });
 
 });

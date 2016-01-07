@@ -25,42 +25,13 @@ angular.module('tabApp', [])
 }]);
 
 
-</script> 
-<?php
-/*date_default_timezone_set('Asia/Jakarta');
-
-$date1 = new DateTime('2015-12-11 21:05:59');
-$date2 = new DateTime('2015-12-13 21:09:20');
-
-$diff = $date2->diff($date1);
-$hours = $diff->h;
-$hours = $hours + ($diff->days*24);
-$minutes = $diff->i;
-$minutes = $minutes + ($diff->days*24);
-$seconds = $diff->s;
-$seconds = $seconds + ($diff->days*24);*/
-
-//echo $hours . ":" . $minutes . ":" . $seconds;
-/*$tahun = date('Y');
-    $tahun %= 2000;
-    $bulan = date('n');
-    $tgl = date('j');
-    $jam = date('G', current_time( 'mysql'));
-    $nomor = $tahun+$bulan+$tgl+$jam;
-    echo $tahun .' '. $bulan . ' ' . $tgl . ' ' . ' ' . $jam . ' - ' . date("D M j G:i:s T Y", time()) . ' - ' . time();*/
-
-/*echo "current_time( 'mysql' ) returns local site time: " . current_time( 'mysql' ) . '<br />';
-echo "current_time( 'mysql', 1 ) returns GMT: " . current_time( 'mysql', 1 ) . '<br />';
-echo "current_time( 'timestamp' ) returns local site time: " . date( 'Y-m-d H:i:s', current_time( 'timestamp', 0 ) );
-echo "current_time( 'timestamp', 1 ) returns GMT: " . date( 'Y-m-d H:i:s', current_time( 'timestamp', 1 ) );*/
-
-?>                   
+</script>                 
     <div class="row">
      <!-- <h2>Nama Restaurant</h2>  -->
         <div class="col-lg-12 col-sm-12">
           <div class="col-lg-3 col-sm-6">
             <div class="thumbnail listresto">
-              <a href="/template-overviews/creative" class="post-image-link">
+              <a href="#" class="post-image-link">
                <img width="100%" height="250" src="<?php echo $gambar; ?>?<?php echo millitime(); ?>">
                 <!-- gambar nanti diambil dari inputan admin yang menu distributor - delivery put -->
               </a>
@@ -104,7 +75,18 @@ echo "current_time( 'timestamp', 1 ) returns GMT: " . date( 'Y-m-d H:i:s', curre
                     <div class="jdl_menu">Kategori 1 (nanti diisi kategori)</div>
                     <p></p>
                     <!-- mulai row -->
-                    <div class="row text-center menu-list-area">
+                    <div class="row text-center">
+                        <div class="menu-list-area"></div>
+                        <div>
+                            <center>
+                            <!-- paging -->
+                            <div id="container">
+                              <div id="menu-pagination" class="paginate wrapper ">
+                                  
+                              </div>
+                            </div>
+                          </center
+                        </div>
                     </div>
                   </div>      
                 </div>
@@ -121,7 +103,8 @@ echo "current_time( 'timestamp', 1 ) returns GMT: " . date( 'Y-m-d H:i:s', curre
             if( first_selected_kategori_id != undefined ){
                 var id_kategori = (first_selected_kategori_id).split("_").pop();
 
-                window.doLoadMenuByKategori(id_kategori);
+                //window.doLoadMenuByKategori(id_kategori, 1);
+                window.doLoadMenuPagination(id_kategori);
             }else{
                 $("div.jdl_menu").html("Belum ada menu");        
             }

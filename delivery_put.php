@@ -13,7 +13,7 @@ get_header(); ?>
         <?php foreach($content['distributor'] as $distributor): ?>
         <div class="col-lg-4 col-sm-6">
           <div class="thumbnail listresto">
-            <a href="/template-overviews/creative" class="post-image-link">
+            <a href="#" class="post-image-link">
               <p><a href="<?php echo get_home_url(); ?>/menu-list?distributor=<?php echo $distributor->id_dist; ?>"><img width="100%" height="250" src="<?php echo $distributor->gambar_dist; ?>?<?php echo millitime(); ?>"></a></p>
               <!-- gambar nanti diambil dari inputan admin yang menu distributor - delivery put -->
             </a>
