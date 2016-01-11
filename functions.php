@@ -220,7 +220,7 @@ function my_page_template_redirect(){
 			wp_redirect( home_url() );
 			exit;
 		}else if( is_page('profil') || is_page('pemesanan-berhasil')){
-			wp_redirect( wp_login_url());
+			wp_redirect( home_url().'/otw-adm.php');
 			exit;
 		}
 	}else{

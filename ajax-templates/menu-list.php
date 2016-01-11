@@ -13,7 +13,7 @@
             <?php if( is_user_logged_in() ): ?>
             <a id="menu-pesan-button_<?php echo $menu->id_menudel; ?>" class="menu-pesan-sekarang"><button class="btn-menu"> Pesan Sekarang</button> </a>
             <?php else: ?>
-            <a class="menu-pesan-sekarang" href="<?php echo wp_login_url(); ?>"><button class="btn-menu"> Pesan Sekarang</button> </a>
+            <a class="menu-pesan-sekarang" href="<?php echo home_url().'/otw-adm.php'; ?>"><button class="btn-menu"> Pesan Sekarang</button> </a>
             <?php endif; ?>
             <p></p><a href="<?php echo home_url().'/detail-menu?menu='. $menu->id_menudel; ?>"><button class="btn-menu-detail"> Detail</button> </a></p>
         </div>
