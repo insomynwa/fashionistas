@@ -6,7 +6,7 @@
     <div class="thumbnail">
         <p></p>
         <h4><?php echo $menu->nama_menudel ?></h4>
-        <a href="#ke-menu-deskripsi-produk"><img class="gbr-menu" src="<?php echo $menu->gambar_menudel; ?>?<?php echo millitime(); ?>" alt=""></a>
+        <a href="<?php echo home_url().'/detail-menu?menu='. $menu->id_menudel; ?>"><img class="gbr-menu" src="<?php echo $menu->gambar_menudel; ?>?<?php echo millitime(); ?>" alt=""></a>
         <div class="caption">
             <b>Rp. <?php echo $menu->harga_menudel ?></b>
             <p></p>

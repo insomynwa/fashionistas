@@ -24,7 +24,7 @@ get_header(); ?>
           <?php if( is_user_logged_in() ): ?>
             <a id="menu-pesan-button_<?php echo $content['menudel']->GetId(); ?>" class="menu-pesan-sekarang"><button class="btn-menu"> Pesan Sekarang</button> </a>
             <?php else: ?>
-            <a class="menu-pesan-sekarang" href="<?php echo home_url().'/otw-adm.php; ?>"><button class="btn-menu"> Pesan Sekarang</button> </a>
+            <a class="menu-pesan-sekarang" href="<?php echo home_url().'/otw-adm.php'; ?>"><button class="btn-menu"> Pesan Sekarang</button> </a>
           <?php endif; ?>
         </div>
     </div><!-- #primary -->
