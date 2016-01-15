@@ -3,35 +3,35 @@
 get_header(); ?>
 
   <div class="row">
-    <div class="col-md-8 banner-home img-responsive"><img width="100%" height="400" src="http://www.decathlon.co.uk/ecuk/static/Delivery/home-delivery-banner.jpg"></div>
-    <div class="col-md-4">
+    <div class="col-md-12 banner-home img-responsive"><img width="100%" height="400" src="http://www.decathlon.co.uk/ecuk/static/Delivery/home-delivery-banner.jpg"></div>
+    <!-- <div class="col-md-4">
         <section style="background:#f5f5f5; height:257px;">
-          <form name="loginform" id="loginform" method="post" action="<?php echo home_url().'/otw-adm.php'; ?>" role="login">
+          <form method="post" action="#" role="login">
             <b style="font-size:20px;">Login</b><p></p>
-            <input type="text" id="user_login" name="log" placeholder="Username" required class="form-control input input-lg" />
+            <input type="email" name="email" placeholder="Email" required class="form-control input-lg" value="joestudent@gmail.com" />
             
-            <input type="password" class="form-control input-lg" name="pwd" id="password" placeholder="Password" required />
+            <input type="password" class="form-control input-lg" id="password" placeholder="Password" required="" />
             
             
             <div class="pwstrength_viewport_progress"></div>
             <div class="checdkbox">
                  <label>
-                    <input name="rememberme" id="rememberme" value="forever" type="checkbox"> Remember me
+                    <input type="checkbox"> Remember me
                  </label>
             </div>
             
             
             <center>
-              <button type="submit" name="wp-submit" id="wp-submit" class="btn btn-primary">Sign in</button>
+              <button type="submit" name="go" class="btn btn-primary">Sign in</button>
               <p></p>
               <div>
-                New User? <a href="<?php echo home_url().'/otw-adm.php?action=register'; ?>">Create New Account</a> <br>
-                <a href="<?php echo home_url().'/otw-adm.php?action=lostpassword'; ?>">Forgot Password</a>
+                New User? <a href="#">Create New Account</a> <br>
+                <a href="#">Forgot Password</a>
               </div>
             </center>
           </form>
         </section>  
-    </div>
+    </div> -->
   </div>                                
   <div>
     <div class="spasi"></div>
@@ -48,7 +48,7 @@ get_header(); ?>
           <p>Kami sadar apa artinya “URGENT” dan Kebutuhan yang perlu diantar secara cepat dalam waktu yang terbatas, layanan instant Courier kami akan langsung menjemput dan mengantar barang anda kemanapun di Jakarta secepat mungkin. Kami juga menangani distribusi undangan atau ticket untuk acara anda .</p>
         </div>
         <div class="col-md-4"><img width="100%" height="200" src="http://one08express.com/one08_files/a9efb8_25a485846d454d08b822_0.50_1.20_0.00_png_srz.png">
-          <h2>Dedicated/Corporate Service</h2>
+          <h2>Dedicated/Corporate Cervice</h2>
           <p>Anda memiliki usaha Restaurant, Cake Shop, online Shopping atau apapun yang membutuhkan armada pengantaran. Tidak perlu repot untuk men set up delivery service. kami akan sepenuhnya membantu anda. Tidak perlu repot investasi kendaraan / motor, rekrut armada dan tidak perlu pusing memikirkan resiko, karena semua akan menjadi tanggung jawab kami.  dengan biaya yang efisien.  Disamping itu kami juga akan membantu memasarkan produk anda.</p>
         </div>
       </div>  

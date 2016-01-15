@@ -107,7 +107,7 @@
                   <label for="email">Nama penerima</label>
                   <input id="modal-nama-customer" type="text" class="data-user-nama" required placeholder="nama penerima" value="<?php if( $hasAlamat) echo $alamat->GetNama(); ?>">
                   <label for="password">No. telp</label>
-                  <input id="modal-telp-customer" type="text" class="data-user-telp" placeholder="No telp" value="<?php if( $hasAlamat) echo $alamat->GetTelp(); ?>">
+                  <input id="modal-telp-customer" type="number" class="data-user-telp" placeholder="No telp" value="<?php if( $hasAlamat) echo $alamat->GetTelp(); ?>">
                   <!-- <label for="alamat">Alamat</label> --> <!-- Pake Ajax kaya JNE -->
                   <!-- <input id="modal-alamat-area-customer" type="text" placeholder="alamat"> -->
                   <label for="alamat_detail">Alamat detail</label>

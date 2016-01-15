@@ -127,7 +127,7 @@ get_header(); ?>
         </div>
         <div class="form-group">
             <label for="usr">No. Telp:</label>
-            <input type="text" class="form-control data-user-telp" required id="modal-telp-customer" value="<?php if( $hasData) echo $data_user->GetTelp(); ?>">
+            <input type="number" class="form-control data-user-telp" required id="modal-telp-customer" value="<?php if( $hasData) echo $data_user->GetTelp(); ?>">
         </div>
         <!-- <div class="form-group">
             <label for="usr">Alamat:</label>
