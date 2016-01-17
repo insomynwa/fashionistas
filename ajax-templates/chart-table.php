@@ -2,10 +2,10 @@
     <thead class="thead-inverse">
         <tr>
             <!-- <th width="5%">No</th> <?php //$nomor = 1; ?> -->
-            <th width="25%">Distributor</th>
-            <th width="25%">List order</th>
-            <th width="25%">alamat pengiriman</th>
-            <th width="25%">Price</th>
+            <th width="25%">DISTRIBUTOR</th>
+            <th width="25%">LIST ORDER</th>
+            <th width="25%">ALAMAT PENGIRIMAN</th>
+            <th width="25%">PRICE</th>
         </tr>
     </thead>
     <tbody>
@@ -55,10 +55,10 @@
             </td>
             <!-- NILAI PEMBAYARAN -->
             <td><br>
-                Subtotal :  <b><span id="subtotal-area-id_<?php echo $invoice->GetId(); ?>" class="subtotal-area">Rp.<?php echo $total_nilai_menu; ?></span></b><br>
+                Subtotal :  <b><span id="subtotal-area-id_<?php echo $invoice->GetId(); ?>" class="subtotal-area">Rp.<?php echo number_format($total_nilai_menu, 0,',','.'); ?></span></b><br>
                 Biaya Pengiriman :  
                 <b>
-                    <span id="ongkir-area-id_<?php echo $invoice->GetId(); ?>" class="ongkir-area"><?php if( $invoice->GetBiayaKirim() > 0) echo $invoice->GetBiayaKirim(); else echo 'alamat belum diisi.' ?></span>
+                    <span id="ongkir-area-id_<?php echo $invoice->GetId(); ?>" class="ongkir-area"><?php if( $invoice->GetBiayaKirim() > 0) echo 'Rp.'.number_format($invoice->GetBiayaKirim(), 0,',','.'); else echo 'alamat belum diisi.' ?></span>
                     <span id="jarak-area-id_<?php echo $invoice->GetId(); ?>" class="jarak-area"><?php if( $invoice->GetJarakKirim() >= 0) echo '('.$invoice->GetJarakKirim().' KM)'; else echo 'alamat belum diisi.' ?></span>
                 </b>
                 <div class="divider"></div><br>
@@ -67,7 +67,7 @@
                     <font color="red">
                         <h2>
                             <span id="total-area-id_<?php echo $invoice->GetId(); ?>" class="total-area">
-                                <?php if( $invoice->GetBiayaKirim() > 0) echo 'Rp.'.(($total_nilai_menu * 0.05) + $total_nilai_menu + $invoice->GetBiayaKirim()); else echo 'alamat belum diisi.' ?>
+                                <?php if( $invoice->GetBiayaKirim() > 0) echo 'Rp.'.number_format((($total_nilai_menu * 0.05) + $total_nilai_menu + $invoice->GetBiayaKirim()), 0,',','.'); else echo 'alamat belum diisi.' ?>
                             </span>
                         </h2>
                     </font>
@@ -226,7 +226,7 @@ jQuery(document).ready(function($){
             'bank' : bank,
             'mode' : modebayar,
             'jam_kirim' : jam_kirim,
-            'action' : "AjaxPostTransferPembayaran"
+            'action' : "AjaxPostTransferPembayaranL"
         };
         /*var h = data['jam_kirim'].replace(/\s+/g, '').substring(0,2);
         var m = data['jam_kirim'].replace(/\s+/g, '').substring(3);*/

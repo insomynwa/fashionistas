@@ -11,7 +11,7 @@ get_header(); ?>
   jQuery(document).ready(function($){
     
     var data= {
-      'action' : 'AjaxGetChartTable'
+      'action' : 'AjaxGetChartTableL'
     };
 
     $.get(OnexAjax.ajaxurl, data, function(response){

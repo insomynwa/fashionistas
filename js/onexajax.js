@@ -14,7 +14,7 @@ jQuery(document).ready(function($){
 
 	    // save to invoice
 	    var data = {
-	      'action'   : 'AjaxCustomerPesanMenu',
+	      'action'   : 'AjaxCustomerPesanMenuL',
 	      'distributor' : distributor,
 	      'menu' : id_menudel,
 	      'security' : OnexAjax.security
@@ -34,7 +34,7 @@ jQuery(document).ready(function($){
 	}
 
 	window.doDeletePesanan = function DeletePesanan(menu_pesanan){
-		$.post(OnexAjax.ajaxurl,{ pesanan_menu : menu_pesanan, action: "AjaxDeletePesananMenu" })
+		$.post(OnexAjax.ajaxurl,{ pesanan_menu : menu_pesanan, action: "AjaxDeletePesananMenuL" })
 		.done( function (response) {
 			var result = jQuery.parseJSON( response);
 			if( result.status == true){
@@ -51,7 +51,7 @@ jQuery(document).ready(function($){
 	}
 
 	window.doUpdateJumlahPesanan = function UpdateJumlahPesanan(menu_pesanan, jumlah){
-		$.post( OnexAjax.ajaxurl, { pesanan_menu : menu_pesanan, jumlah_pesanan : jumlah, action: "AjaxUpdateJumlahPesanan" })
+		$.post( OnexAjax.ajaxurl, { pesanan_menu : menu_pesanan, jumlah_pesanan : jumlah, action: "AjaxUpdateJumlahPesananL" })
 		.done( function (response) {
 			var result = jQuery.parseJSON( response);
 
@@ -66,7 +66,7 @@ jQuery(document).ready(function($){
 
 	window.doHitungTotalMenu = function HitungTotalMenu(invoice_id){
 
-		$.get(OnexAjax.ajaxurl, { action: "AjaxGetTotalMenu", invoice: invoice_id })
+		$.get(OnexAjax.ajaxurl, { action: "AjaxGetTotalMenuL", invoice: invoice_id })
 		.done(function(response){
 			$("span#subtotal-area-id_"+invoice_id).html("Rp." + response);
 			doHitungTotalPembayaran(false, invoice_id);
@@ -82,7 +82,7 @@ jQuery(document).ready(function($){
 				telp: custdata['telp'],
 				//alamat_area: custdata['alamat_area'],
 				detail_alamat: custdata['detail_alamat'],
-				action: "AjaxUpdateDataCustomer"
+				action: "AjaxUpdateDataCustomerL"
 			}
 			)
 			.done(function(response){
@@ -110,7 +110,7 @@ jQuery(document).ready(function($){
 	}
 
 	window.doHitungOngkir = function HitungOngkir(){
-			$.getJSON(OnexAjax.ajaxurl, { action: "AjaxGetOngkir"/*, invoice: invoiceArr*/ })
+			$.getJSON(OnexAjax.ajaxurl, { action: "AjaxGetOngkirL"/*, invoice: invoiceArr*/ })
 			.done(function(response){
 				//alert(response['invoice']);
 				for( var i=0; i<(response['invoice']).length; i++){
@@ -140,7 +140,7 @@ jQuery(document).ready(function($){
 		}
 
 		if(invoiceArr.length > 0){
-			$.getJSON(OnexAjax.ajaxurl, { action: "AjaxGetTotalPembayaran", invoice: invoiceArr })
+			$.getJSON(OnexAjax.ajaxurl, { action: "AjaxGetTotalPembayaranL", invoice: invoiceArr })
 			.done(function(response){
 				//alert(response[0]['jarak']);
 				for(var i=0; i < invoiceArr.length; i++){
@@ -191,7 +191,7 @@ jQuery(document).ready(function($){
 		//$("div#menu-list-area-active").attr("ng-show","isSet("+id_kategori+")");
 
 		var data = {
-			'action': 'AjaxGetMenuByKategori',
+			'action': 'AjaxGetMenuByKategoriL',
 			'kategori' : id_kategori,
 			'page' : page,
 			'security' : OnexAjax.security

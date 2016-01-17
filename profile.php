@@ -18,7 +18,7 @@ get_header(); ?>
             <div class="thumbnail">
                 <b>Informasi Kontak</b><br />
                 <span>Username: <?php echo $user_info->user_login; ?></span><br />
-                <span>Email: <?php /*var_dump($user_info); */echo $user_info->user_email; ?></span>
+                <span>Email: <?php echo $user_info->user_email; ?></span>
                 <div align="right"><a href data-toggle="modal" data-target="#change_account" id="update-account-link">Ubah</a></div>
                 <p></p>
             </div>
@@ -201,7 +201,7 @@ jQuery(document).ready( function( $) {
     $("a.invoice-link").click( function() {
         var inv = (this.id).split('_').pop();
         var data = {
-            'action' : 'AjaxRetrieveInvoiceDetail',
+            'action' : 'AjaxRetrieveInvoiceDetailL',
             'invoice': inv
         };
 

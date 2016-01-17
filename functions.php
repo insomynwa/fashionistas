@@ -250,8 +250,8 @@ function millitime(){
 *	ONEX AJAX function callback
 *
 */
-add_action( 'wp_ajax_AjaxGetMenuByKategori', 'AjaxLoad_MenuByKategori');
-add_action( 'wp_ajax_nopriv_AjaxGetMenuByKategori', 'AjaxLoad_MenuByKategori');
+add_action( 'wp_ajax_AjaxGetMenuByKategoriL', 'AjaxLoad_MenuByKategori');
+add_action( 'wp_ajax_nopriv_AjaxGetMenuByKategoriL', 'AjaxLoad_MenuByKategori');
 function AjaxLoad_MenuByKategori(){
 
 	if( isset($_GET['kategori']) && isset($_GET['page']) && $_GET['kategori']!="" && $_GET['page']!="" ){
@@ -307,7 +307,7 @@ function AjaxLoad_MenuPaginationByKategori(){
 	wp_die();
 }
 
-add_action( 'wp_ajax_AjaxDeletePesananMenu', 'AjaxPost_Delete_PesananMenu');
+add_action( 'wp_ajax_AjaxDeletePesananMenuL', 'AjaxPost_Delete_PesananMenu');
 function AjaxPost_Delete_PesananMenu(){
 
 	$result['status'] = false;
@@ -354,7 +354,7 @@ function AjaxPost_Delete_PesananMenu(){
 	wp_die();
 }
 
-add_action( 'wp_ajax_AjaxCustomerPesanMenu', 'AjaxPost_Customer_PesanMenu');
+add_action( 'wp_ajax_AjaxCustomerPesanMenuL', 'AjaxPost_Customer_PesanMenu');
 function AjaxPost_Customer_PesanMenu(){
 
 	$result['status'] = false;
@@ -439,7 +439,7 @@ function AjaxPost_Customer_PesanMenu(){
 	wp_die();
 }
 
-add_action( 'wp_ajax_AjaxGetChartTable', 'AjaxLoad_ChartUser');
+add_action( 'wp_ajax_AjaxGetChartTableL', 'AjaxLoad_ChartUser');
 function AjaxLoad_ChartUser(){
 	if( is_user_logged_in()){
 		$customer_id = get_current_user_id();
@@ -504,7 +504,7 @@ function AjaxLoad_ChartUser(){
 	wp_die();
 }
 
-add_action( 'wp_ajax_AjaxRetrieveInvoiceDetail', 'AjaxRetrieve_Invoice_Detail');
+add_action( 'wp_ajax_AjaxRetrieveInvoiceDetailL', 'AjaxRetrieve_Invoice_Detail');
 function AjaxRetrieve_Invoice_Detail(){
 	if( is_user_logged_in()){
 
@@ -544,7 +544,7 @@ function AjaxRetrieve_Invoice_Detail(){
 	wp_die();
 }
 
-add_action( 'wp_ajax_AjaxGetTotalPembayaran', 'AjaxLoad_TotalPembayaran');
+add_action( 'wp_ajax_AjaxGetTotalPembayaranL', 'AjaxLoad_TotalPembayaran');
 function AjaxLoad_TotalPembayaran(){
 	if( is_user_logged_in() ){
 		if( isset( $_GET['invoice']) ){
@@ -577,7 +577,7 @@ function AjaxLoad_TotalPembayaran(){
 	wp_die();
 }
 
-add_action( 'wp_ajax_AjaxGetOngkir', 'AjaxLoad_Ongkir');
+add_action( 'wp_ajax_AjaxGetOngkirL', 'AjaxLoad_Ongkir');
 function AjaxLoad_Ongkir(){
 	if( is_user_logged_in()){
 
@@ -621,7 +621,7 @@ function AjaxLoad_Ongkir(){
 	wp_die();
 }
 
-add_action( 'wp_ajax_AjaxGetTotalMenu', 'AjaxLoad_TotalMenu');
+add_action( 'wp_ajax_AjaxGetTotalMenuL', 'AjaxLoad_TotalMenu');
 function AjaxLoad_TotalMenu(){
 	if( is_user_logged_in()){
 		if( isset( $_GET['invoice']) ){
@@ -637,7 +637,7 @@ function AjaxLoad_TotalMenu(){
 	wp_die();
 }
 
-add_action( 'wp_ajax_AjaxUpdateJumlahPesanan', 'AjaxUpdate_Jumlah_Pesanan');
+add_action( 'wp_ajax_AjaxUpdateJumlahPesananL', 'AjaxUpdate_Jumlah_Pesanan');
 function AjaxUpdate_Jumlah_Pesanan(){
 	$result['status'] = false;
 	$result['message'] = '';
@@ -738,7 +738,7 @@ function AjaxLoad_DataCustomer(){
 	wp_die();
 }
 
-add_action( 'wp_ajax_AjaxUpdateDataCustomer', 'AjaxUpdate_DataCustomer');
+add_action( 'wp_ajax_AjaxUpdateDataCustomerL', 'AjaxUpdate_DataCustomer');
 function AjaxUpdate_DataCustomer(){
 	if( is_user_logged_in()){
 
@@ -763,7 +763,7 @@ function AjaxUpdate_DataCustomer(){
 	wp_die();
 }
 
-add_action( 'wp_ajax_AjaxPostTransferPembayaran', 'AjaxPost_Pembayaran_Transfer');
+add_action( 'wp_ajax_AjaxPostTransferPembayaranL', 'AjaxPost_Pembayaran_Transfer');
 function AjaxPost_Pembayaran_Transfer(){
 	if( is_user_logged_in()){
 		if( isset( $_POST['invoice']) && isset( $_POST['bank']) && isset( $_POST['jam_kirim']) && isset( $_POST['mode']) ) {
@@ -796,9 +796,19 @@ function AjaxPost_Pembayaran_Transfer(){
 			$invoice->SetTanggalUserConfirm();
 			$result = $invoice->KonfirmasiPembayaran();
 			$result['direct'] = 'pemesanan-berhasil';
-			//if($result['status']){
-				//wp_redirect(home_url().'/pemesanan-berhasil'); exit;
-			//}
+
+			if($result['status']){
+				$data_pembeli = new Onex_Data_Pembeli();
+				$data_pembeli->SetDataPembeliUser( get_current_user_id() );
+				$penerima = new Onex_Data_Penerima();
+				$penerima->SetNama( $data_pembeli->GetNama());
+				$penerima->SetTelp( $data_pembeli->GetTelp());
+				$penerima->SetAlamatArea( $data_pembeli->GetAlamatArea());
+				$penerima->SetAlamatDetail( $data_pembeli->GetAlamatDetail());
+				$penerima->SetInvoice( $post_invoice_id);
+				$penerima->CreateDataPenerima();
+			}
+
 			echo wp_json_encode($result);
 		}
 	}
